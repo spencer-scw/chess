@@ -139,8 +139,35 @@ public class ChessPiece {
         return  validMoves;
     }
 
+    private void recursiveWalker(int dirX, int dirY, ChessPosition origin, ChessPosition currPosition, ChessBoard board, HashSet<ChessMove> validMoves) {
+        int row = currPosition.getRow();
+        int col = currPosition.getColumn();
+        ChessPosition newPosition = new ChessPosition(row + dirX, col + dirY);
+
+        ChessMove currMove = new ChessMove(origin, currPosition, null);
+
+        if (currPosition.isIndexInBounds()) {
+            ChessPiece currPiece = board.getPiece(currPosition);
+            if (currPiece == null) {
+                validMoves.add(currMove);
+                recursiveWalker(dirX, dirY, origin, newPosition, board, validMoves);
+            } else if (board.getPiece(currPosition).getTeamColor() != color) {
+                validMoves.add(currMove);
+            }
+        }
+    }
+
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        int[] directionsX = {-1, 0, 1, 0};
+        int[] directionsY = {0, 1, 0, -1};
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        HashSet<ChessMove> validMoves = new HashSet<>();
+        for (int i = 0; i < directionsX.length; i++) {
+            ChessPosition newPosition = new ChessPosition(row + directionsX[i], col + directionsY[i]);
+            recursiveWalker(directionsX[i], directionsY[i], myPosition, newPosition, board, validMoves);
+        }
+        return validMoves;
     }
 
     private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
@@ -161,11 +188,24 @@ public class ChessPiece {
 
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        int[] directions = {-1, 1};
+        HashSet<ChessMove> validMoves = new HashSet<>();
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        for (int directionX : directions) {
+            for (int directionY : directions) {
+                ChessPosition newPosition = new ChessPosition(row + directionX, col + directionY);
+                recursiveWalker(directionX, directionY, myPosition, newPosition, board, validMoves);
+            }
+        }
+        return validMoves;
     }
 
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        HashSet<ChessMove> validMoves = new HashSet<>();
+        validMoves.addAll(bishopMoves(board, myPosition));
+        validMoves.addAll(rookMoves(board, myPosition));
+        return validMoves;
     }
 
     private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
