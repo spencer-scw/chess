@@ -11,11 +11,9 @@ import java.util.Arrays;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] boardSquares;
+    private ChessPiece[][] boardSquares = new ChessPiece[8][8];
 
-    public ChessBoard() {
-       resetBoard();
-    }
+    public ChessBoard() {}
 
     /**
      * Adds a chess piece to the chessboard
