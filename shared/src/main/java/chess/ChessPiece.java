@@ -79,12 +79,12 @@ public class ChessPiece {
         }
     }
 
-    private void pawnCheckPosition(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves, ChessPosition newPos, boolean capture) {
+    private void pawnCheckPosition(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves, ChessPosition newPos, boolean capture, boolean promotion) {
         if (!newPos.isIndexInBounds()) {
             return;
         }
         ChessMove currMove = new ChessMove(myPosition, newPos, null);
-        if ( (color == ChessGame.TeamColor.WHITE && newPos.getRow() == 8) || (color == ChessGame.TeamColor.BLACK && newPos.getRow() == 1)) {
+        if ( promotion ) {
             for (PieceType option : PieceType.values()) {
                 if (option != PieceType.PAWN && option != PieceType.KING) {
                     currMove = new ChessMove(myPosition, newPos, option);
@@ -113,9 +113,20 @@ public class ChessPiece {
     }
 
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
-        int direction = switch (color) {
-            case BLACK -> -1;
-            case WHITE -> 1;
+        int direction = 0;
+        int promotionRow = 0;
+        int initialRow = 0;
+        switch (color) {
+            case BLACK -> {
+                direction = -1;
+                promotionRow = 2;
+                initialRow = 7;
+            }
+            case WHITE -> {
+                direction = 1;
+                promotionRow = 7;
+                initialRow = 2;
+            }
         };
         int[] captureDirections = {-1, 1};
 
@@ -124,16 +135,16 @@ public class ChessPiece {
         int col = myPosition.getColumn();
 
         ChessPosition forward = new ChessPosition(row + direction, col);
-        pawnCheckPosition(board, myPosition, validMoves, forward, false);
+        pawnCheckPosition(board, myPosition, validMoves, forward, false, row == promotionRow);
 
-        if (validMoves.size() == 1 && ((row == 2 && color == ChessGame.TeamColor.WHITE ) || (row == 7 && color == ChessGame.TeamColor.BLACK))) {
+        if (validMoves.size() == 1 && row == initialRow) {
             ChessPosition doubleForward = new ChessPosition(row + 2 * direction, col);
-            pawnCheckPosition(board, myPosition, validMoves, doubleForward, false);
+            pawnCheckPosition(board, myPosition, validMoves, doubleForward, false, false);
         }
 
         for (int i : captureDirections) {
             ChessPosition currCapture = new ChessPosition(row + direction, col + i);
-            pawnCheckPosition(board, myPosition, validMoves, currCapture, true);
+            pawnCheckPosition(board, myPosition, validMoves, currCapture, true, row == promotionRow);
         }
 
         return  validMoves;
@@ -184,7 +195,6 @@ public class ChessPiece {
         }
         return validMoves;
     }
-
 
 
     private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
