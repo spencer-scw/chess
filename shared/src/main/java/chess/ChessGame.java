@@ -1,8 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.stream.Collectors;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -12,18 +12,17 @@ import java.util.stream.Collectors;
  */
 public class ChessGame {
     private ChessBoard board = new ChessBoard();
-    private TeamColor turn;
+    private TeamColor turnColor;
 
     public ChessGame() {
-        turn = TeamColor.WHITE;
-        board.resetBoard();
+        turnColor = TeamColor.WHITE;
     }
 
     /**
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        return turn;
+        return turnColor;
     }
 
     /**
@@ -32,7 +31,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        turn = team;
+        turnColor = team;
     }
 
     /**
@@ -52,9 +51,27 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece currPiece = board.getPiece(startPosition);
-        Collection<ChessMove> allMoves = currPiece.pieceMoves(board, startPosition);
 
-        //TODO: prune allMoves of illegal moves due to check or wrong turn
+        if (currPiece == null)
+            return null;
+
+        Collection<ChessMove> allMoves = currPiece.pieceMoves(board, startPosition);
+        HashSet<ChessMove> invalidMoves = new HashSet<>();
+
+        for (ChessMove move : allMoves) {
+            ChessGame tempGame = new ChessGame();
+            tempGame.setTeamTurn(currPiece.getTeamColor());
+
+            ChessBoard tempBoard = new ChessBoard();
+            tempBoard.copyBoard(board);
+            tempGame.setBoard(tempBoard);
+
+            tempGame.getBoard().movePiece(move);
+            if (tempGame.isInCheck(currPiece.getTeamColor()))
+                invalidMoves.add(move);
+        }
+
+        allMoves.removeAll(invalidMoves);
 
         return allMoves;
     }
@@ -66,7 +83,7 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (validMoves(move.getStartPosition()).contains(move)) {
+        if (validMoves(move.getStartPosition()).contains(move) && turnColor == board.getPiece(move.getStartPosition()).getTeamColor()) {
             board.movePiece(move);
         } else {
             throw new InvalidMoveException();
@@ -81,9 +98,10 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPosition = board.findPiece(new ChessPiece(teamColor, ChessPiece.PieceType.KING));
-        ChessBoard tempBoard = board;
+        ChessBoard tempBoard = new ChessBoard();
 
         for (ChessPiece.PieceType dangerPossibility : ChessPiece.PieceType.values()) {
+            tempBoard.copyBoard(board);
             ChessPiece tempPiece = new ChessPiece(teamColor, dangerPossibility);
             tempBoard.removePiece(kingPosition);
             tempBoard.addPiece(kingPosition, tempPiece);

@@ -108,6 +108,23 @@ public class ChessBoard {
         System.out.println(boardSquares[0][0]);
     }
 
+    public void copyBoard (ChessBoard board) {
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition currPosition = new ChessPosition(i, j);
+
+                ChessPiece oldPiece = board.getPiece(currPosition);
+
+                if (oldPiece == null)
+                    addPiece(currPosition, null);
+                else {
+                    ChessPiece newPiece = new ChessPiece(oldPiece.getTeamColor(), oldPiece.getPieceType());
+                    addPiece(currPosition, newPiece);
+                }
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "ChessBoard{" +
