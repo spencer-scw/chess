@@ -54,7 +54,7 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         HashSet<ChessMove> validMoves = new HashSet<>();
-        validMoves = switch (type) {
+        switch (type) {
             case PAWN -> pawnMoves(board, myPosition, validMoves);
             case ROOK -> rookMoves(board, myPosition, validMoves);
             case KNIGHT -> knightMoves(board, myPosition, validMoves);
@@ -71,7 +71,7 @@ public class ChessPiece {
         return row > 0 && row < 9 && col > 0 && col < 9;
     }
 
-    private HashSet<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
+    private void pawnMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
         int direction = 0;
         int promotionRow = 0;
         int initalRow = 0;
@@ -135,7 +135,6 @@ public class ChessPiece {
             }
         }
 
-        return validMoves;
     }
 
     private HashSet<ChessMove> pawnPromotionGenerator(ChessMove blankMove) {
@@ -165,7 +164,7 @@ public class ChessPiece {
         }
     }
 
-    private HashSet<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
+    private void rookMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
         int[] directionsX = {-1, 0, 1, 0};
         int[] directionsY = {0, 1, 0, -1};
 
@@ -182,10 +181,9 @@ public class ChessPiece {
         for (ChessPosition position : validPositions) {
             validMoves.add(new ChessMove(myPosition, position, null));
         }
-        return validMoves;
     }
 
-    private HashSet<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
+    private void bishopMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
         int[] directions = {-1, 1};
 
         int row = myPosition.getRow();
@@ -203,16 +201,14 @@ public class ChessPiece {
         for (ChessPosition position : validPositions) {
             validMoves.add(new ChessMove(myPosition, position, null));
         }
-        return validMoves;
     }
 
-    private HashSet<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
-        validMoves.addAll(bishopMoves(board, myPosition, validMoves));
-        validMoves.addAll(rookMoves(board, myPosition, validMoves));
-        return validMoves;
+    private void queenMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
+        bishopMoves(board, myPosition, validMoves);
+        rookMoves(board, myPosition, validMoves);
     }
 
-    private HashSet<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
+    private void knightMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
         int[] positionsX = {-2, -2, -1, -1, 1,  1, 2,  2};
         int[] positionsY = { 1, -1,  2, -2, 2, -2, 1, -1};
 
@@ -231,10 +227,9 @@ public class ChessPiece {
                 }
             }
         }
-        return validMoves;
     }
 
-    private HashSet<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
+    private void kingMoves(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves) {
         int[] positions = {-1, 0, 1};
 
         int row = myPosition.getRow();
@@ -254,7 +249,6 @@ public class ChessPiece {
                 }
             }
         }
-        return validMoves;
     }
 
     public boolean equals(Object object) {
