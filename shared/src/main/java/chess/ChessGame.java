@@ -83,8 +83,14 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (validMoves(move.getStartPosition()).contains(move) && turnColor == board.getPiece(move.getStartPosition()).getTeamColor()) {
-            board.movePiece(move);
+        if (validMoves(move.getStartPosition()).contains(move)) {
+            if (turnColor == board.getPiece(move.getStartPosition()).getTeamColor()) {
+                board.movePiece(move);
+                turnColor = switch (turnColor){
+                    case BLACK -> TeamColor.WHITE;
+                    case WHITE -> TeamColor.BLACK;
+                };
+            }
         } else {
             throw new InvalidMoveException();
         }
@@ -98,6 +104,9 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition kingPosition = board.findPiece(new ChessPiece(teamColor, ChessPiece.PieceType.KING));
+        if (kingPosition == null) {
+            return false;
+        }
         ChessBoard tempBoard = new ChessBoard();
 
         for (ChessPiece.PieceType dangerPossibility : ChessPiece.PieceType.values()) {
