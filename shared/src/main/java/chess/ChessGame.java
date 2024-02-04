@@ -90,6 +90,8 @@ public class ChessGame {
                     case BLACK -> TeamColor.WHITE;
                     case WHITE -> TeamColor.BLACK;
                 };
+            } else {
+                throw new InvalidMoveException();
             }
         } else {
             throw new InvalidMoveException();
