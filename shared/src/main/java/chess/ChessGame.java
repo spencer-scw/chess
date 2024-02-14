@@ -122,7 +122,7 @@ public class ChessGame {
                 ChessPiece currPiece = tempBoard.getPiece(currMove.getEndPosition());
                 if (currPiece != null) {
                     if (currPiece.getTeamColor() != teamColor && currPiece.getPieceType() == dangerPossibility) {
-                        return true;
+                            return true;
                     }
                 }
             }
