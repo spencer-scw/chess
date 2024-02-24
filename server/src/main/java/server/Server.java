@@ -11,6 +11,8 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
+        Spark.get("/test", this::test);
+
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -18,5 +20,9 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private Object test(Request req, Response res) {
+        return true;
     }
 }
