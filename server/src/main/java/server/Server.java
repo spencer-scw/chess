@@ -33,7 +33,7 @@ public class Server {
         gameDAO = new MemoryGameDAO();
         userDAO = new MemoryUserDAO();
 
-        gameService = new GameService();
+        gameService = new GameService(authDAO, gameDAO);
         userService = new UserService(authDAO, userDAO);
         utilService = new UtilService(authDAO, gameDAO, userDAO);
 
@@ -53,6 +53,8 @@ public class Server {
         Spark.post("/user", userHandler::register);
         Spark.post("/session", sessionHandler::login);
         Spark.delete("/session", sessionHandler::logout);
+        Spark.get("/game", gameHandler::list);
+        Spark.post("/game", gameHandler::create);
 
         Spark.exception(Exception.class, userHandler::errorHandler);
 

@@ -1,6 +1,7 @@
 package dataAccess;
 
 import model.GameData;
+import model.ShortGameData;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,8 +31,18 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public Collection<GameData> listGames() throws DataAccessException {
-        return gameDataHashSet;
+    public Collection<ShortGameData> listGames() throws DataAccessException {
+        HashSet<ShortGameData> shortGameDataHashSet = new HashSet<>();
+        for (GameData game : gameDataHashSet) {
+            ShortGameData shortGameData = new ShortGameData(
+                    game.gameID(),
+                    game.whiteUsername(),
+                    game.blackUsername(),
+                    game.gameName()
+            );
+            shortGameDataHashSet.add(shortGameData);
+        }
+        return shortGameDataHashSet;
     }
 
     @Override
