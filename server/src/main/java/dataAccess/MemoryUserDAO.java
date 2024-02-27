@@ -3,6 +3,7 @@ package dataAccess;
 import model.UserData;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 public class MemoryUserDAO implements UserDAO{
 
@@ -11,8 +12,8 @@ public class MemoryUserDAO implements UserDAO{
     @Override
     public void addUser(UserData user) throws DataAccessException {
         for (UserData curr_user : userDataHashSet) {
-            if (user.username() == curr_user.username()){
-                throw new DataAccessException("Username is taken!");
+            if (Objects.equals(user.username(), curr_user.username())){
+                throw new DataAccessException("already taken");
             }
         }
         userDataHashSet.add(user);
@@ -21,7 +22,7 @@ public class MemoryUserDAO implements UserDAO{
     @Override
     public UserData getUser(String username) throws DataAccessException {
         for (UserData user : userDataHashSet) {
-            if (user.username() == user.username()){
+            if (Objects.equals(user.username(), username)){
                 return user;
             }
         }

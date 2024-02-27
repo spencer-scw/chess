@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.*;
+import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.util.ajax.JSON;
 import service.GameService;
@@ -38,12 +39,9 @@ public class Server {
         // Register your endpoints and handle exceptions here.
 
         Spark.delete("/db", this::clear);
+        Spark.post("/user", this::register);
 
         Spark.exception(Exception.class, this::errorHandler);
-        Spark.notFound((req, res) -> {
-            var msg = String.format("[%s] %s not found", req.requestMethod(), req.pathInfo());
-            return errorHandler(new Exception(msg), req, res);
-        });
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -62,11 +60,40 @@ public class Server {
         return "null";
     }
 
+    private Object register(Request req, Response res) {
+        System.out.println("Registering!");
+
+        var bodyObj = getBody(req, Map.class);
+
+        UserData user = new UserData(
+                (String) bodyObj.get("username"),
+                (String) bodyObj.get("password"),
+                (String) bodyObj.get("email")
+        );
+        return userService.register(user);
+    }
+
     public Object errorHandler(Exception e, Request req, Response res) {
         var body = new Gson().toJson(Map.of("message",  String.format("Error: %s", e.getMessage())));
         res.type("application/json");
-        res.status(500);
+
+        int code = switch (e.getMessage()) {
+            case "bad request" -> 400;
+            case "unauthorized" -> 401;
+            case "already taken" -> 403;
+            default -> 500;
+        };
+
+        res.status(code);
         res.body(body);
+        return body;
+    }
+
+    private static <T> T getBody(Request request, Class<T> clazz) {
+        var body = new Gson().fromJson(request.body(), clazz);
+        if (body == null) {
+            throw new RuntimeException("missing required body");
+        }
         return body;
     }
 }
