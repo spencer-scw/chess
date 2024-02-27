@@ -1,17 +1,12 @@
 package server;
 
-import com.google.gson.Gson;
 import dataAccess.*;
-import model.AuthData;
-import model.UserData;
-import org.eclipse.jetty.server.Authentication;
-import org.eclipse.jetty.util.ajax.JSON;
 import service.GameService;
 import service.UserService;
 import service.UtilService;
-import spark.*;
-
-import java.util.Map;
+import spark.Request;
+import spark.Response;
+import spark.Spark;
 
 public class Server {
     private AuthDAO authDAO;
