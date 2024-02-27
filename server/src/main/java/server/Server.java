@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.*;
+import model.AuthData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
 import org.eclipse.jetty.util.ajax.JSON;
@@ -27,7 +28,7 @@ public class Server {
         userDAO = new MemoryUserDAO();
 
         gameService = new GameService();
-        userService = new UserService();
+        userService = new UserService(authDAO, userDAO);
         utilService = new UtilService(authDAO, gameDAO, userDAO);
     }
 
@@ -65,12 +66,26 @@ public class Server {
 
         var bodyObj = getBody(req, Map.class);
 
+        if (bodyObj.size() != 3 ) {
+            return errorHandler(new Exception("bad request"), req, res);
+        }
+
         UserData user = new UserData(
                 (String) bodyObj.get("username"),
                 (String) bodyObj.get("password"),
                 (String) bodyObj.get("email")
         );
-        return userService.register(user);
+
+        res.status(200);
+        res.type("application/json");
+
+        AuthData auth = userService.register(user);
+
+        if (auth == null) {
+            return errorHandler(new Exception("already taken"), req, res);
+        }
+
+        return new Gson().toJson(auth);
     }
 
     public Object errorHandler(Exception e, Request req, Response res) {
