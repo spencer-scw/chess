@@ -217,15 +217,7 @@ public class ChessPiece {
 
         for (int i = 0; i < positionsY.length; i++) {
             ChessPosition newPos = new ChessPosition(row + positionsY[i], col + positionsX[i]);
-            ChessMove currMove = new ChessMove(myPosition, newPos, null);
-            if (isIndexInBounds(newPos)){
-                ChessPiece target = board.getPiece(newPos);
-                if (target == null) {
-                    validMoves.add(currMove);
-                } else if (target.getTeamColor() != color) {
-                    validMoves.add(currMove);
-                }
-            }
+            moveCalculator(board, myPosition, validMoves, newPos);
         }
     }
 
@@ -238,15 +230,19 @@ public class ChessPiece {
         for (int i : positions) {
             for (int j : positions) {
                 ChessPosition newPos = new ChessPosition(row + i, col + j);
-                ChessMove currMove = new ChessMove(myPosition, newPos, null);
-                if (isIndexInBounds(newPos)){
-                    ChessPiece target = board.getPiece(newPos);
-                    if (target == null) {
-                        validMoves.add(currMove);
-                    } else if (target.getTeamColor() != color) {
-                        validMoves.add(currMove);
-                    }
-                }
+                moveCalculator(board, myPosition, validMoves, newPos);
+            }
+        }
+    }
+
+    private void moveCalculator(ChessBoard board, ChessPosition myPosition, HashSet<ChessMove> validMoves, ChessPosition newPos) {
+        ChessMove currMove = new ChessMove(myPosition, newPos, null);
+        if (isIndexInBounds(newPos)){
+            ChessPiece target = board.getPiece(newPos);
+            if (target == null) {
+                validMoves.add(currMove);
+            } else if (target.getTeamColor() != color) {
+                validMoves.add(currMove);
             }
         }
     }

@@ -11,8 +11,8 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public void addUser(UserData user) throws DataAccessException {
-        for (UserData curr_user : userDataHashSet) {
-            if (Objects.equals(user.username(), curr_user.username())){
+        for (UserData currUser : userDataHashSet) {
+            if (Objects.equals(user.username(), currUser.username())){
                 throw new DataAccessException("already taken");
             }
         }
