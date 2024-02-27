@@ -46,7 +46,7 @@ public class SessionHandler extends Handler
         if (userService.logout(authToken)) {
             res.status(200);
             res.type("application/json");
-            return "null";
+            return "{}";
         }
         return errorHandler(new Exception("unauthorized"), req, res);
     }

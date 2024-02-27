@@ -68,6 +68,6 @@ public class Server {
         utilService.clear();
         res.status(200);
         res.type("application/json");
-        return "null";
+        return "{}";
     }
 }

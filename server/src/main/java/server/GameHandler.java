@@ -82,6 +82,6 @@ public class GameHandler extends Handler {
         }
         res.status(200);
         res.type("application/json");
-        return "null";
+        return "{}";
     }
 }
