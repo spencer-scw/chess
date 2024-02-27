@@ -38,7 +38,7 @@ public class Server {
         utilService = new UtilService(authDAO, gameDAO, userDAO);
 
         gameHandler = new GameHandler();
-        sessionHandler = new SessionHandler();
+        sessionHandler = new SessionHandler(userService);
         userHandler = new UserHandler(userService);
     }
 
@@ -51,6 +51,8 @@ public class Server {
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", userHandler::register);
+        Spark.post("/session", sessionHandler::login);
+        Spark.delete("/session", sessionHandler::logout);
 
         Spark.exception(Exception.class, userHandler::errorHandler);
 

@@ -24,20 +24,45 @@ public class UserService {
         } catch (DataAccessException e) {
             return null;
         }
-        AuthData auth = new AuthData(UUID.randomUUID().toString(), user.username());
+        return newAuth(user.username());
+    }
+
+    public AuthData login(UserData user) {
+        UserData dbUser;
+        try {
+            dbUser = userDAO.getUser(user.username());
+        } catch (DataAccessException e) {
+            return null;
+        }
+
+        if (dbUser.password().equals(user.password())) {
+            return newAuth(user.username());
+        }
+        return null;
+    }
+
+    public boolean logout(String authToken) {
+        AuthData auth;
+        try {
+            auth = authDAO.getAuth(authToken);
+        } catch (DataAccessException e) {
+            return false;
+        }
+        try {
+            authDAO.deleteAuth(auth);
+        } catch (DataAccessException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private AuthData newAuth(String username) {
+        AuthData auth = new AuthData(UUID.randomUUID().toString(), username);
         try {
             authDAO.createAuth(auth);
         } catch (DataAccessException e) {
             return null;
         }
         return auth;
-    }
-
-    public AuthData login(UserData user) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    public void logout(UserData user) {
-        throw new RuntimeException("Not implemented");
     }
 }

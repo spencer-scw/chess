@@ -30,15 +30,14 @@ public class UserHandler extends Handler {
                 (String) bodyObj.get("email")
         );
 
-        res.status(200);
-        res.type("application/json");
-
         AuthData auth = userService.register(user);
 
         if (auth == null) {
             return errorHandler(new Exception("already taken"), req, res);
         }
 
+        res.status(200);
+        res.type("application/json");
         return new Gson().toJson(auth);
     }
 }

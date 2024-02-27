@@ -9,13 +9,13 @@ public class MemoryAuthDAO implements AuthDAO {
     HashSet<AuthData> authDataHashSet = new HashSet<>();
 
     @Override
-    public boolean validateAuth(AuthData auth) throws DataAccessException {
-        if (!authDataHashSet.contains(auth)) {
-            throw new DataAccessException("Auth not found!");
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        for (AuthData auth : authDataHashSet) {
+            if (auth.authToken().equals(authToken)) {
+                return auth;
+            }
         }
-        else {
-            return true;
-        }
+        throw new DataAccessException("Auth token not found!");
     }
 
     @Override
