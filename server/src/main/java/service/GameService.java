@@ -3,11 +3,12 @@ package service;
 import model.AuthData;
 import model.GameData;
 import model.JoinData;
+import model.ListGameData;
 
 import java.util.ArrayList;
 
 public class GameService {
-    public ArrayList<GameData> listGames(AuthData auth){
+    public ListGameData listGames(AuthData auth){
         throw new RuntimeException("Not implemented");
     }
 
@@ -15,7 +16,7 @@ public class GameService {
         throw new RuntimeException("Not implemented");
     }
 
-    public String joinGame(AuthData auth, JoinData join) {
+    public void joinGame(AuthData auth, JoinData join) {
         throw new RuntimeException("Not implemented");
     }
 }

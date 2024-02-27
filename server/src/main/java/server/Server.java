@@ -37,7 +37,7 @@ public class Server {
         userService = new UserService(authDAO, userDAO);
         utilService = new UtilService(authDAO, gameDAO, userDAO);
 
-        gameHandler = new GameHandler();
+        gameHandler = new GameHandler(gameService);
         sessionHandler = new SessionHandler(userService);
         userHandler = new UserHandler(userService);
     }
