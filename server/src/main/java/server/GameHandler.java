@@ -1,8 +1,11 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
+import model.JoinData;
 import model.ListGameData;
+import model.UserData;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -57,6 +60,28 @@ public class GameHandler extends Handler {
 
     public Object join(Request req, Response res) {
         System.out.println("joining");
-        return 0;
+
+        var bodyObj = getBody(req, Map.class);
+        JoinData join;
+
+        try {
+            join = new JoinData(
+                    (bodyObj.containsKey("playerColor")) ? ChessGame.TeamColor.valueOf((String) bodyObj.get("playerColor")) : null,
+                    (int) Math.round((Double) bodyObj.get("gameID"))
+            );
+        } catch (Exception e) {
+            return errorHandler(new Exception("bad request"), req, res);
+        }
+
+        var authToken = req.headers("authorization");
+
+        try {
+            gameService.joinGame(authToken, join);
+        } catch (Exception e) {
+            return errorHandler(e, req, res);
+        }
+        res.status(200);
+        res.type("application/json");
+        return "null";
     }
 }

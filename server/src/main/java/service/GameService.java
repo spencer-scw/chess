@@ -15,7 +15,7 @@ public class GameService {
     AuthDAO authDAO;
     GameDAO gameDAO;
 
-    int nextGameID = 0;
+    int nextGameID = 1000;
 
     public GameService(AuthDAO authDAO, GameDAO gameDAO) {
         this.authDAO = authDAO;
@@ -43,7 +43,7 @@ public class GameService {
         } catch (DataAccessException e) {
             return null;
         }
-        GameData gameData = new GameData(nextGameID, "", "", gameName, new ChessGame());
+        GameData gameData = new GameData(nextGameID, null, null, gameName, new ChessGame());
         nextGameID++;
         try {
             gameDAO.createGame(gameData);
@@ -53,7 +53,36 @@ public class GameService {
         return gameData;
     }
 
-    public void joinGame(String authToken, JoinData join) {
-        throw new RuntimeException("Not implemented");
+    public void joinGame(String authToken, JoinData join) throws Exception {
+        AuthData auth;
+        try {
+            auth = authDAO.getAuth(authToken);
+        } catch (DataAccessException e) {
+            throw new Exception("unauthorized");
+        }
+        GameData game;
+        try {
+            game = gameDAO.getGame(join.gameID());
+        } catch (DataAccessException e) {
+            throw new Exception("bad request");
+        }
+        GameData newGame;
+        if (join.desiredColor() == ChessGame.TeamColor.WHITE) {
+            if (game.whiteUsername() != null)
+                throw new Exception("already taken");
+            newGame = new GameData(game.gameID(), auth.username(), game.blackUsername(), game.gameName(), game.game());
+        } else if (join.desiredColor() == ChessGame.TeamColor.BLACK) {
+            if (game.blackUsername() != null)
+                throw new Exception("already taken");
+            newGame = new GameData(game.gameID(), game.whiteUsername(), auth.username(), game.gameName(), game.game());
+        } else {
+            System.out.println("Observing");
+            return;
+        }
+        try {
+            gameDAO.updateGame(newGame);
+        } catch (DataAccessException e) {
+            throw new Exception("bad request");
+        }
     }
 }

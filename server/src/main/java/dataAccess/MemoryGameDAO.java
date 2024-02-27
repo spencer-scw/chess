@@ -47,13 +47,8 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
-        for (GameData currGame : gameDataHashSet) {
-            if (game.gameID() == currGame.gameID()) {
-                currGame = game;
-                return;
-            }
-        }
-        throw new DataAccessException("Game doesn't exist");
+        gameDataHashSet.remove(getGame(game.gameID()));
+        gameDataHashSet.add(game);
     }
 
     @Override

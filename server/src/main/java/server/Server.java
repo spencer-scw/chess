@@ -55,6 +55,7 @@ public class Server {
         Spark.delete("/session", sessionHandler::logout);
         Spark.get("/game", gameHandler::list);
         Spark.post("/game", gameHandler::create);
+        Spark.put("/game", gameHandler::join);
 
         Spark.exception(Exception.class, userHandler::errorHandler);
 
