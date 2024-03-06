@@ -32,16 +32,43 @@ public class DatabaseAuthDAO implements AuthDAO{
 
     @Override
     public void createAuth(AuthData auth) throws DataAccessException {
+        String query = "insert into auth (authToken, username) values (?, ?)";
+        var conn = DatabaseManager.getConnection();
 
+        if (auth.username().matches("[a-zA-Z0-9]+")) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, auth.authToken());
+                preparedStatement.setString(2, auth.username());
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                throw new DataAccessException(e.getMessage());
+            }
+        }
     }
 
     @Override
     public void deleteAuth(AuthData auth) throws DataAccessException {
+        String query = "delete from auth where authToken=?";
+        var conn = DatabaseManager.getConnection();
 
+        try (var preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, auth.authToken());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public void clearAuth() {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("delete from auth")) {
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                return;
+            }
+        } catch (SQLException | DataAccessException e) {
+            return;
+        }
     }
 }

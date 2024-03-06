@@ -14,14 +14,32 @@ public class AuthDAOTests {
     @BeforeAll
     public static void init() throws DataAccessException {
         authDAO = new DatabaseAuthDAO();
+        authDAO.clearAuth();
     }
 
     @Test
-    public void getAuthTest() throws DataAccessException {
+    public void getValidAuth() throws DataAccessException {
 
-        // TODO: Update this test to create the auth instead of relying on the manually inserted one.
+        var auth123 = new AuthData("auth123", "greg");
+        authDAO.createAuth(auth123);
 
-        var authData =  authDAO.getAuth("abad");
-        assertEquals(new AuthData("abad", "greg"), authData);
+        var dbAuthData =  authDAO.getAuth("auth123");
+        assertEquals(auth123, dbAuthData);
+    }
+
+    @Test
+    public void getBadAuth() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("fake_auth"));
+    }
+
+    @Test
+    public void createValidAuth() throws DataAccessException {
+        assertDoesNotThrow(() -> authDAO.createAuth(new AuthData("unused_auth", "timo")));
+    }
+
+    @Test
+    public void createDuplicateAuth() throws DataAccessException {
+        authDAO.createAuth(new AuthData("unused_auth_2", "dan"));
+        assertThrows(DataAccessException.class, () -> authDAO.createAuth(new AuthData("unused_auth_2", "dan")));
     }
 }
