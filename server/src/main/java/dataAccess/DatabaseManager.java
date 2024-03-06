@@ -41,13 +41,14 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+            conn.setCatalog(databaseName);
 
-            var createAuthTable = """
-                CREATE TABLE IF NOT EXISTS auth (
+            var createAuthTable = String.format("""
+                CREATE TABLE IF NOT EXISTS %s.auth (
                 authToken VARCHAR(255) NOT NULL,
                 username VARCHAR(255) NOT NULL,
                 PRIMARY KEY (authToken)
-                )""";
+                )""", databaseName);
             try (var preparedStatement = conn.prepareStatement(createAuthTable)) {
                 preparedStatement.executeUpdate();
             }
@@ -79,16 +80,10 @@ public class DatabaseManager {
         }
     }
 
-    static ResultSet runQuery(String query) throws DataAccessException {
-        try (var conn = getConnection()) {
-            try (var preparedStatement = conn.prepareStatement(query)) {
-                return preparedStatement.executeQuery();
-            } catch (SQLException e) {
-                throw new DataAccessException("Invalid query");
-            }
-        } catch (SQLException e) {
-            throw new DataAccessException("Unable to connect to DB");
-        }
+    static ResultSet runQuery(String query) throws SQLException, DataAccessException {
+         var conn = getConnection();
+         conn.setCatalog(databaseName);
+         var preparedStatement = conn.prepareStatement(query);
+        return preparedStatement.executeQuery();
     }
-
 }

@@ -14,7 +14,7 @@ public class DatabaseAuthDAO implements AuthDAO{
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
         String username;
-        try (ResultSet rs = DatabaseManager.runQuery(String.format("SELECT * FROM auth WHERE authToken = %s", authToken))) {
+        try (ResultSet rs = DatabaseManager.runQuery(String.format("SELECT * FROM auth WHERE authToken='%s'", authToken))) {
             if (rs.next()) {
                 username = rs.getString("username");
             } else {

@@ -926,7 +926,7 @@ chess|schema||chess|localhost|UPDATE|G</Grants>
     </collation>
     <schema id="288" parent="1" name="chess">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-03-06.03:45:39</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-03-06.04:21:04</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="289" parent="1" name="information_schema">
