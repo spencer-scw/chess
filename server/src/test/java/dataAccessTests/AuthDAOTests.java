@@ -42,4 +42,28 @@ public class AuthDAOTests {
         authDAO.createAuth(new AuthData("unused_auth_2", "dan"));
         assertThrows(DataAccessException.class, () -> authDAO.createAuth(new AuthData("unused_auth_2", "dan")));
     }
+
+    @Test
+    public void deleteValidAuth() throws DataAccessException {
+        var herobrine = new AuthData("delete_me", "herobrine");
+        authDAO.createAuth(herobrine);
+        authDAO.deleteAuth(herobrine);
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("delete_me"));
+    }
+
+    @Test
+    public void deleteInvalidAuth() throws DataAccessException {
+        assertThrows(DataAccessException.class, () -> authDAO.deleteAuth(new AuthData("fake_auth", "unreal")));
+    }
+
+    @Test
+    public void clearAll() throws DataAccessException {
+        authDAO.createAuth(new AuthData("a", "a"));
+        authDAO.createAuth(new AuthData("b", "b"));
+        authDAO.createAuth(new AuthData("c", "c"));
+        authDAO.clearAuth();
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("a"));
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("b"));
+        assertThrows(DataAccessException.class, () -> authDAO.getAuth("c"));
+    }
 }

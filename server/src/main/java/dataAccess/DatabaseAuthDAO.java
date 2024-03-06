@@ -53,7 +53,9 @@ public class DatabaseAuthDAO implements AuthDAO{
 
         try (var preparedStatement = conn.prepareStatement(query)) {
             preparedStatement.setString(1, auth.authToken());
-            preparedStatement.executeUpdate();
+            if (preparedStatement.executeUpdate() == 0) {
+                throw new DataAccessException("Auth doesn't exist");
+            }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -62,7 +64,7 @@ public class DatabaseAuthDAO implements AuthDAO{
     @Override
     public void clearAuth() {
         try (var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("delete from auth")) {
+            try (var preparedStatement = conn.prepareStatement("delete from auth where TRUE")) {
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 return;
