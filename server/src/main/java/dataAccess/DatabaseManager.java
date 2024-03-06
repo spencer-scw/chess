@@ -41,6 +41,17 @@ public class DatabaseManager {
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
             }
+
+            var createAuthTable = """
+                CREATE TABLE IF NOT EXISTS auth (
+                authToken VARCHAR(255) NOT NULL,
+                username VARCHAR(255) NOT NULL,
+                PRIMARY KEY (authToken)
+                )""";
+            try (var preparedStatement = conn.prepareStatement(createAuthTable)) {
+                preparedStatement.executeUpdate();
+            }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
@@ -67,4 +78,17 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    static ResultSet runQuery(String query) throws DataAccessException {
+        try (var conn = getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                return preparedStatement.executeQuery();
+            } catch (SQLException e) {
+                throw new DataAccessException("Invalid query");
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Unable to connect to DB");
+        }
+    }
+
 }
