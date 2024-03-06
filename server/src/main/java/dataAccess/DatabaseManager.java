@@ -82,8 +82,7 @@ public class DatabaseManager {
 
     static ResultSet runQuery(String query) throws SQLException, DataAccessException {
          var conn = getConnection();
-         conn.setCatalog(databaseName);
          var preparedStatement = conn.prepareStatement(query);
-        return preparedStatement.executeQuery();
+         return preparedStatement.executeQuery();
     }
 }

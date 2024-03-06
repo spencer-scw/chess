@@ -14,11 +14,15 @@ public class DatabaseAuthDAO implements AuthDAO{
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
         String username;
-        try (ResultSet rs = DatabaseManager.runQuery(String.format("SELECT * FROM auth WHERE authToken='%s'", authToken))) {
-            if (rs.next()) {
-                username = rs.getString("username");
-            } else {
-                throw new DataAccessException("No username");
+        String query = String.format("SELECT * FROM auth WHERE authToken='%s'", authToken);
+        var conn = DatabaseManager.getConnection();
+        try (var preparedStatement = conn.prepareStatement(query)) {
+            try (var rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    username = rs.getString("username");
+                } else {
+                    throw new DataAccessException("No username");
+                }
             }
         } catch (SQLException e) {
             throw new DataAccessException("Bad query");
