@@ -1,6 +1,6 @@
 package dataAccessTests;
 
-import dataAccess.AuthDAO;
+import dataAccess.interfaces.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseAuthDAO;
 import model.AuthData;

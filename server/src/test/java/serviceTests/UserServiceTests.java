@@ -1,12 +1,12 @@
 package serviceTests;
 
 import dataAccess.*;
+import dataAccess.interfaces.AuthDAO;
+import dataAccess.interfaces.UserDAO;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.UserService;
-
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 

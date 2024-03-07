@@ -1,15 +1,13 @@
 package service;
 
 import chess.ChessGame;
-import dataAccess.AuthDAO;
+import dataAccess.interfaces.AuthDAO;
 import dataAccess.DataAccessException;
-import dataAccess.GameDAO;
+import dataAccess.interfaces.GameDAO;
 import model.AuthData;
 import model.GameData;
 import model.JoinData;
 import model.ListGameData;
-
-import java.util.ArrayList;
 
 public class GameService {
     AuthDAO authDAO;

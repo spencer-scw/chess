@@ -3,7 +3,7 @@ package dataAccessTests;
 import chess.ChessGame;
 import dataAccess.DataAccessException;
 import dataAccess.DatabaseGameDAO;
-import dataAccess.GameDAO;
+import dataAccess.interfaces.GameDAO;
 import model.GameData;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -26,15 +26,15 @@ public class GameDAOTests {
 
     @Test
     public void createDuplicateGame() throws DataAccessException {
-        var emptyGame = new GameData(1, null, null, "emptyGame", new ChessGame());
-        gameDAO.createGame(emptyGame);
+        var emptyGame = new GameData(1, null, null, null, new ChessGame());
         assertThrows(DataAccessException.class, () -> gameDAO.createGame(emptyGame));
     }
 
     @Test
     public void getExistingGame() throws DataAccessException {
         var showdown = new GameData(2, "carl", "darby", "game2", new ChessGame());
-        assertDoesNotThrow(() -> gameDAO.getGame(showdown.gameID()));
+        int dbID = gameDAO.createGame(showdown);
+        assertDoesNotThrow(() -> gameDAO.getGame(dbID));
     }
 
     @Test
@@ -60,15 +60,16 @@ public class GameDAOTests {
 
     @Test
     public void updateGameValid() throws DataAccessException {
-        gameDAO.createGame(new GameData(30, null, null, "joinable", new ChessGame()));
-        gameDAO.updateGame(new GameData(30, null, "Joshua", "joinable", new ChessGame()));
-        var blackName = gameDAO.getGame(30).blackUsername();
+        int gameID = gameDAO.createGame(new GameData(30, null, null, "joinable", new ChessGame()));
+        gameDAO.updateGame(new GameData(gameID, null, "Joshua", "joinable", new ChessGame()));
+        var blackName = gameDAO.getGame(gameID).blackUsername();
         assertEquals(blackName, "Joshua");
     }
 
     @Test
-    public void updateGameInvalid() {
-        assertThrows(DataAccessException.class, () -> gameDAO.updateGame(new GameData(-1, null, null, "Fake_Game", new ChessGame())));
+    public void updateGameInvalid() throws DataAccessException {
+        gameDAO.updateGame(new GameData(-1, null, null, "Fake_Game", new ChessGame()));
+        assertThrows(DataAccessException.class, () -> gameDAO.getGame(-1));
     }
 
     @Test

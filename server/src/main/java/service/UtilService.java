@@ -1,8 +1,8 @@
 package service;
 
-import dataAccess.AuthDAO;
-import dataAccess.GameDAO;
-import dataAccess.UserDAO;
+import dataAccess.interfaces.AuthDAO;
+import dataAccess.interfaces.GameDAO;
+import dataAccess.interfaces.UserDAO;
 
 public class UtilService {
     AuthDAO authDAO;

@@ -1,10 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
 import model.AuthData;
 import model.UserData;
-import org.eclipse.jetty.client.ResponseNotifier;
 import service.UserService;
 import spark.Request;
 import spark.Response;

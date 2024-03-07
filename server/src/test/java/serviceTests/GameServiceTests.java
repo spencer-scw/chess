@@ -2,6 +2,9 @@ package serviceTests;
 
 import chess.ChessGame;
 import dataAccess.*;
+import dataAccess.interfaces.AuthDAO;
+import dataAccess.interfaces.GameDAO;
+import dataAccess.interfaces.UserDAO;
 import model.JoinData;
 import model.UserData;
 import org.junit.jupiter.api.BeforeEach;

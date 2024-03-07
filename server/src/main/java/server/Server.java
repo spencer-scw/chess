@@ -1,6 +1,9 @@
 package server;
 
 import dataAccess.*;
+import dataAccess.interfaces.AuthDAO;
+import dataAccess.interfaces.GameDAO;
+import dataAccess.interfaces.UserDAO;
 import service.GameService;
 import service.UserService;
 import service.UtilService;
@@ -24,8 +27,8 @@ public class Server {
     private final UserHandler userHandler;
 
     public Server() {
-        authDAO = new MemoryAuthDAO();
-        gameDAO = new MemoryGameDAO();
+        authDAO = new DatabaseAuthDAO();
+        gameDAO = new DatabaseGameDAO();
         userDAO = new MemoryUserDAO();
 
         gameService = new GameService(authDAO, gameDAO);
