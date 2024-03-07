@@ -11,13 +11,14 @@ public class MemoryGameDAO implements GameDAO{
     HashSet<GameData> gameDataHashSet = new HashSet<>();
 
     @Override
-    public void createGame(GameData game) throws DataAccessException {
+    public int createGame(GameData game) throws DataAccessException {
         for (GameData currGame : gameDataHashSet) {
             if (game.gameID() == currGame.gameID()) {
                 throw new DataAccessException("Game ID already exists");
             }
         }
         gameDataHashSet.add(game);
+        return game.gameID();
     }
 
     @Override

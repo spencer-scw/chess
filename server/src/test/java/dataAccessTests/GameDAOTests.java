@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class GameDAOTests {
     static GameDAO gameDAO;
     @BeforeAll
-    static public void init() {
+    static public void init() throws DataAccessException {
         gameDAO = new DatabaseGameDAO();
         gameDAO.clearGames();
     }
@@ -20,8 +20,8 @@ public class GameDAOTests {
     @Test
     public void createValidGame() throws DataAccessException {
         var pailOfWater = new GameData(0, "jack", "jill", "pailOfWater", new ChessGame());
-        gameDAO.createGame(pailOfWater);
-        assertEquals(pailOfWater, gameDAO.getGame(pailOfWater.gameID()));
+        var waterID = gameDAO.createGame(pailOfWater);
+        assertEquals(pailOfWater.gameName(), gameDAO.getGame(waterID).gameName());
     }
 
     @Test
@@ -44,6 +44,7 @@ public class GameDAOTests {
 
     @Test
     public void listGames() throws DataAccessException {
+        gameDAO.clearGames();
         for (int i = 0; i < 10; i++) {
             gameDAO.createGame(new GameData(10 + i, null, null, String.format("game%s",10 + i), new ChessGame()));
         }
@@ -58,17 +59,25 @@ public class GameDAOTests {
     }
 
     @Test
-    public void updateGameValid() {
-        
+    public void updateGameValid() throws DataAccessException {
+        gameDAO.createGame(new GameData(30, null, null, "joinable", new ChessGame()));
+        gameDAO.updateGame(new GameData(30, null, "Joshua", "joinable", new ChessGame()));
+        var blackName = gameDAO.getGame(30).blackUsername();
+        assertEquals(blackName, "Joshua");
     }
 
     @Test
     public void updateGameInvalid() {
-
+        assertThrows(DataAccessException.class, () -> gameDAO.updateGame(new GameData(-1, null, null, "Fake_Game", new ChessGame())));
     }
 
     @Test
-    public void clearGames() {
-
+    public void clearGames() throws DataAccessException {
+        for (int i = 0; i < 10; i++) {
+            gameDAO.createGame(new GameData(50 + i, null, null, String.format("game%s",50 + i), new ChessGame()));
+        }
+        gameDAO.clearGames();
+        var returnedList = gameDAO.listGames();
+        assertEquals(0, returnedList.size());
     }
 }

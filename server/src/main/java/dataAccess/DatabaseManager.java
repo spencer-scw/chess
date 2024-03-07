@@ -53,6 +53,19 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
 
+            var createGameTable = String.format("""
+                CREATE TABLE IF NOT EXISTS %s.games (
+                gameID INT NOT NULL AUTO_INCREMENT,
+                whiteUsername VARCHAR(255),
+                blackUsername VARCHAR(255),
+                gameName VARCHAR(255) NOT NULL,
+                game TEXT NOT NULL,
+                PRIMARY KEY (gameID)
+                )""", databaseName);
+            try (var preparedStatement = conn.prepareStatement(createGameTable)) {
+                preparedStatement.executeUpdate();
+            }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }

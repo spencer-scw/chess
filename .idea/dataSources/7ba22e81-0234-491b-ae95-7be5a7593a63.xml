@@ -926,7 +926,7 @@ chess|schema||chess|localhost|UPDATE|G</Grants>
     </collation>
     <schema id="288" parent="1" name="chess">
       <Current>1</Current>
-      <LastIntrospectionLocalTimestamp>2024-03-06.04:21:04</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2024-03-07.02:13:58</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </schema>
     <schema id="289" parent="1" name="information_schema">
@@ -942,22 +942,60 @@ chess|schema||chess|localhost|UPDATE|G</Grants>
       <Engine>InnoDB</Engine>
       <CollationName>utf8mb4_0900_ai_ci</CollationName>
     </table>
-    <column id="293" parent="292" name="authToken">
+    <table id="293" parent="288" name="games">
+      <Engine>InnoDB</Engine>
+      <CollationName>utf8mb4_0900_ai_ci</CollationName>
+    </table>
+    <column id="294" parent="292" name="authToken">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>1</Position>
     </column>
-    <column id="294" parent="292" name="username">
+    <column id="295" parent="292" name="username">
       <DasType>varchar(255)|0s</DasType>
       <NotNull>1</NotNull>
       <Position>2</Position>
     </column>
-    <index id="295" parent="292" name="PRIMARY">
+    <index id="296" parent="292" name="PRIMARY">
       <ColNames>authToken</ColNames>
       <Type>btree</Type>
       <Unique>1</Unique>
     </index>
-    <key id="296" parent="292" name="PRIMARY">
+    <key id="297" parent="292" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
+    </key>
+    <column id="298" parent="293" name="gameID">
+      <AutoIncrement>25</AutoIncrement>
+      <DasType>int|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+    </column>
+    <column id="299" parent="293" name="whiteUsername">
+      <DasType>varchar(255)|0s</DasType>
+      <Position>2</Position>
+    </column>
+    <column id="300" parent="293" name="blackUsername">
+      <DasType>varchar(255)|0s</DasType>
+      <Position>3</Position>
+    </column>
+    <column id="301" parent="293" name="gameName">
+      <DasType>varchar(255)|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+    </column>
+    <column id="302" parent="293" name="game">
+      <DasType>text|0s</DasType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+    </column>
+    <index id="303" parent="293" name="PRIMARY">
+      <ColNames>gameID</ColNames>
+      <Type>btree</Type>
+      <Unique>1</Unique>
+    </index>
+    <key id="304" parent="293" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <Primary>1</Primary>
       <UnderlyingIndexName>PRIMARY</UnderlyingIndexName>
