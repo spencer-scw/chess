@@ -1,14 +1,18 @@
 package dataAccess;
 
+import dataAccess.interfaces.AuthDAO;
 import model.AuthData;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DatabaseAuthDAO implements AuthDAO{
+public class DatabaseAuthDAO implements AuthDAO {
 
-    public DatabaseAuthDAO() throws DataAccessException {
-        DatabaseManager.createDatabase();
+    public DatabaseAuthDAO() {
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e) {
+            return;
+        }
     }
 
     @Override

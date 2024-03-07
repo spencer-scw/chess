@@ -1,11 +1,12 @@
 package dataAccess;
 
+import dataAccess.interfaces.UserDAO;
 import model.UserData;
 
 import java.util.HashSet;
 import java.util.Objects;
 
-public class MemoryUserDAO implements UserDAO{
+public class MemoryUserDAO implements UserDAO {
 
     HashSet<UserData> userDataHashSet = new HashSet<>();
 

@@ -1,5 +1,6 @@
-package dataAccess;
+package dataAccess.interfaces;
 
+import dataAccess.DataAccessException;
 import model.GameData;
 import model.ShortGameData;
 

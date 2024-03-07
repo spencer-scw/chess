@@ -1,12 +1,13 @@
 package dataAccess;
 
+import dataAccess.interfaces.GameDAO;
 import model.GameData;
 import model.ShortGameData;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-public class MemoryGameDAO implements GameDAO{
+public class MemoryGameDAO implements GameDAO {
 
     HashSet<GameData> gameDataHashSet = new HashSet<>();
 

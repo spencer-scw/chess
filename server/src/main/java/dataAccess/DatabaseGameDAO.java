@@ -2,17 +2,23 @@ package dataAccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
+import dataAccess.interfaces.GameDAO;
 import model.GameData;
 import model.ShortGameData;
 
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 
-public class DatabaseGameDAO implements GameDAO{
+public class DatabaseGameDAO implements GameDAO {
 
-    public DatabaseGameDAO() throws DataAccessException {
-        DatabaseManager.createDatabase();
+    public DatabaseGameDAO() {
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException e) {
+            return;
+        }
     }
 
     @Override
@@ -65,16 +71,52 @@ public class DatabaseGameDAO implements GameDAO{
 
     @Override
     public Collection<ShortGameData> listGames() throws DataAccessException {
-        return null;
+        Collection<ShortGameData> returnedGames = new ArrayList<>();
+        String query = "SELECT * FROM games";
+        var conn = DatabaseManager.getConnection();
+        try (var preparedStatement = conn.prepareStatement(query)) {
+            try (var rs = preparedStatement.executeQuery()) {
+                while (rs.next()) {
+                    var gameID = rs.getInt("gameID");
+                    var whiteUsername = rs.getString("whiteUsername");
+                    var blackUsername = rs.getString("blackUsername");
+                    var gameName = rs.getString("gameName");
+                    returnedGames.add(new ShortGameData(gameID, whiteUsername, blackUsername, gameName));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Bad query");
+        }
+        return returnedGames;
     }
 
     @Override
     public void updateGame(GameData game) throws DataAccessException {
+        String query = "UPDATE games SET blackUsername=?, whiteUsername=?, gameName=?, game=? WHERE gameID=?";
+        var conn = DatabaseManager.getConnection();
+        try (var preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, game.blackUsername());
+            preparedStatement.setString(2, game.whiteUsername());
+            preparedStatement.setString(3, game.gameName());
+            preparedStatement.setString(4, new Gson().toJson(game.game()));
+            preparedStatement.setInt(5, game.gameID());
 
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
     public void clearGames() {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("delete from games where TRUE")) {
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                return;
+            }
+        } catch (SQLException | DataAccessException e) {
+            return;
+        }
     }
 }
