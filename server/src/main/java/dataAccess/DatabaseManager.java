@@ -66,6 +66,17 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
 
+            var createUserTable = String.format("""
+                CREATE TABLE IF NOT EXISTS %s.users (
+                username VARCHAR(255) NOT NULL,
+                passHash VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                PRIMARY KEY (username)
+                )""", databaseName);
+            try (var preparedStatement = conn.prepareStatement(createUserTable)) {
+                preparedStatement.executeUpdate();
+            }
+
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
