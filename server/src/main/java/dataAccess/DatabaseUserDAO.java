@@ -2,6 +2,7 @@ package dataAccess;
 
 import com.google.gson.Gson;
 import dataAccess.interfaces.UserDAO;
+import model.AuthData;
 import model.UserData;
 
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public class DatabaseUserDAO implements UserDAO {
                 preparedStatement.setString(1, user.username());
             if (user.password().matches("[a-zA-Z0-9!@#$%^&*]+"))
                 preparedStatement.setString(2, user.password());
-            if (user.email().matches("[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+"))
+            if (user.email().matches("[a-zA-Z0-9+_.-@]+"))
                 preparedStatement.setString(3, user.email());
 
             preparedStatement.executeUpdate();
@@ -39,7 +40,23 @@ public class DatabaseUserDAO implements UserDAO {
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
-        return null;
+        UserData userData;
+        String query = String.format("SELECT * FROM users WHERE username='%s'", username);
+        var conn = DatabaseManager.getConnection();
+        try (var preparedStatement = conn.prepareStatement(query)) {
+            try (var rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    var passHash = rs.getString("passHash");
+                    var email = rs.getString("email");
+                    userData = new UserData(username, passHash, email);
+                } else {
+                    throw new DataAccessException("No username");
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Bad query");
+        }
+        return userData;
     }
 
     @Override

@@ -44,7 +44,8 @@ public class GameService {
         GameData gameData = new GameData(nextGameID, null, null, gameName, new ChessGame());
         nextGameID++;
         try {
-            gameDAO.createGame(gameData);
+            var dbID = gameDAO.createGame(gameData);
+            gameData = new GameData(dbID, gameData.whiteUsername(), gameData.blackUsername(), gameData.gameName(), gameData.game());
         } catch (DataAccessException e) {
             return null;
         }

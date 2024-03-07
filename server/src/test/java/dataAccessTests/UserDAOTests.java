@@ -34,7 +34,7 @@ public class UserDAOTests {
     public void getValidUser() throws DataAccessException {
         var mat = new UserData("Mat", "dice123", "mat@wot.net");
         userDAO.addUser(mat);
-        assertEquals(mat, userDAO.getUser("mat"));
+        assertEquals(mat, userDAO.getUser("Mat"));
     }
 
     @Test
