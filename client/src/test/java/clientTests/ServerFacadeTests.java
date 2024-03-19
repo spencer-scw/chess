@@ -1,21 +1,24 @@
 package clientTests;
 
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 import server.Server;
 import ui.ChessClient;
+import ui.ServerFacade;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ServerFacadeTests {
 
     private static Server server;
-    static ChessClient chessClient;
+    static ServerFacade serverFacade;
 
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        var port = server.run(8081);
         System.out.println("Started test HTTP server on " + port);
-        chessClient = new ChessClient("localhost:0")
+        serverFacade = new ServerFacade("localhost:8081");
     }
 
     @AfterAll
@@ -25,8 +28,8 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void testLogin() {
-        chessClient.
+    void testInvalidLogin() {
+        assertEquals("Incorrect username or password. Please try again.", serverFacade.logIn(new String[]{"spencer", "wilson"}));
     }
 
 }
