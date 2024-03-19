@@ -41,24 +41,26 @@ public class ServerFacade {
         }
     }
 
-    public String logIn(String[] params) {
-        HttpURLConnection http;
-        try {
-            return this.handleHTTP(
-                   "POST",
-                   "session",
-                   "",
-                    Map.of("username", params[0], "password", params[1])
-            ).toString();
-        } catch (Exception e) {
-            if (e.getClass() != IOException.class) {
-                return "bad URL";
-            } else {
-                return "Incorrect username or password. Please try again.";
-            }
-        }
+    public Map logIn(String[] params) throws Exception {
+        return this.handleHTTP(
+               "POST",
+               "session",
+               "",
+                Map.of("username", params[0], "password", params[1])
+        );
 
     }
+
+    public Map register(String[] params) throws IOException, URISyntaxException {
+        return this.handleHTTP(
+                "POST",
+                "user",
+                "",
+                Map.of("username", params[0], "password", params[1], "email", params[2])
+        );
+
+    }
+
     public String observeGame(String[] params) {
         return "";
     }
@@ -79,9 +81,7 @@ public class ServerFacade {
         return "";
     }
 
-    public String register(String[] params) {
-        return null;
-    }
+
 
 
 }

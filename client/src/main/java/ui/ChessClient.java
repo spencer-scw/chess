@@ -1,20 +1,15 @@
 package ui;
 
-import com.google.gson.Gson;
+import model.AuthData;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
 import java.util.Arrays;
 import java.util.Map;
 
 public class ChessClient {
     private final ServerFacade serverFacade;
     private State clientState;
+    private String authToken;
 
     public ChessClient(String serverURL) {
         this.serverFacade = new ServerFacade(serverURL);
@@ -27,21 +22,63 @@ public class ChessClient {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-            return switch (cmd) {
-                case "login" -> serverFacade.logIn(params);
-                case "register" -> serverFacade.register(params);
+            if (clientState == State.SIGNEDOUT) {
+                return switch (cmd) {
+                    case "login" -> logIn(params);
+                    case "register" -> register(params);
+                    case "quit" -> "quit";
+                    default -> help();
+                };
+            } else {
+                return switch (cmd) {
 
-                case "logout" -> serverFacade.logOut(params);
-                case "create" -> serverFacade.createGame(params);
-                case "list" -> serverFacade.listGames();
-                case "join" -> serverFacade.joinGame(params);
-                case "observe" -> serverFacade.observeGame(params);
+                    case "logout" -> serverFacade.logOut(params);
+                    case "create" -> serverFacade.createGame(params);
+                    case "list" -> serverFacade.listGames();
+                    case "join" -> serverFacade.joinGame(params);
+                    case "observe" -> serverFacade.observeGame(params);
 
-                case "quit" -> "quit";
-                default -> help();
-            };
+                    case "quit" -> "quit";
+                    default -> help();
+                };
+            }
         } catch (Exception ex) {
             return ex.getMessage();
+        }
+    }
+
+
+    private String logIn(String[] params) {
+        Map result;
+        try {
+            result = serverFacade.logIn(params);
+            authToken = (String) result.get("authToken");
+            clientState = State.SIGNEDIN;
+            return String.format("Signed in successfully as %s", result.get("username"));
+        } catch (Exception e) {
+            if (e.getClass() != IOException.class) {
+                return e.getMessage();
+            } else {
+                return "Incorrect username or password. Please try again.";
+            }
+        }
+    }
+
+    private String register(String[] params) {
+        Map result;
+        try {
+            result = serverFacade.register(params);
+            authToken = (String) result.get("authToken");
+            clientState = State.SIGNEDIN;
+            return String.format("Successfully registered %s and signed in automatically.", result.get("username"));
+        } catch (Exception e) {
+            if (e.getClass() != IOException.class) {
+                return "bad URL";
+            } else if (e.getMessage().contains("403")) {
+                return "Sorry, that username is already taken. Try another.";
+            } else {
+                return e.getMessage();
+            }
         }
     }
 

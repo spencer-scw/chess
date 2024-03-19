@@ -6,6 +6,9 @@ import server.Server;
 import ui.ChessClient;
 import ui.ServerFacade;
 
+import java.io.IOException;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ServerFacadeTests {
@@ -28,8 +31,14 @@ public class ServerFacadeTests {
 
 
     @Test
-    void testInvalidLogin() {
-        assertEquals("Incorrect username or password. Please try again.", serverFacade.logIn(new String[]{"spencer", "wilson"}));
+    void testInvalidLogin() throws Exception {
+        assertThrows(IOException.class, () -> serverFacade.logIn(new String[]{"spencer", "wrong_pass"}));
+    }
+
+    @Test
+    void testValidLogin() throws Exception {
+        serverFacade.register(new String[]{"spencer", "wilson", "spencer.scw@gmail.com"});
+        assertEquals("spencer", serverFacade.logIn(new String[]{"spencer", "wilson"}).get("username"));
     }
 
 }
