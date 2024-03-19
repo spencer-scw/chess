@@ -13,11 +13,11 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class ChessClient {
-    private final String serverURL;
+    private final ServerFacade serverFacade;
     private State clientState;
 
     public ChessClient(String serverURL) {
-        this.serverURL = String.format("http://%s", serverURL);
+        this.serverFacade = new ServerFacade(serverURL);
 
         clientState = State.SIGNEDOUT;
     }
@@ -28,14 +28,14 @@ public class ChessClient {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "login" -> logIn(params);
-                case "register" -> register(params);
+                case "login" -> serverFacade.logIn(params);
+                case "register" -> serverFacade.register(params);
 
-                case "logout" -> logOut(params);
-                case "create" -> createGame(params);
-                case "list" -> listGames();
-                case "join" -> joinGame(params);
-                case "observe" -> observeGame(params);
+                case "logout" -> serverFacade.logOut(params);
+                case "create" -> serverFacade.createGame(params);
+                case "list" -> serverFacade.listGames();
+                case "join" -> serverFacade.joinGame(params);
+                case "observe" -> serverFacade.observeGame(params);
 
                 case "quit" -> "quit";
                 default -> help();
@@ -69,61 +69,5 @@ public class ChessClient {
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT);
         }
-    }
-
-    private String observeGame(String[] params) {
-        return "";
-    }
-
-    private String joinGame(String[] params) {
-        return "";
-    }
-
-    private String listGames() {
-        return "";
-    }
-
-    private String createGame(String[] params) {
-        return "";
-    }
-
-    private String logOut(String[] params) {
-        return "";
-    }
-
-    private String register(String[] params) {
-        return null;
-    }
-
-    private String logIn(String[] params) {
-        HttpURLConnection http;
-        try {
-            URI uri = new URI(String.format("%s/session", serverURL));
-            http = (HttpURLConnection) uri.toURL().openConnection();
-            http.setRequestMethod("POST");
-            http.setDoOutput(true);
-            http.addRequestProperty("Content-Type", "application/json");
-            var body = Map.of("username", params[0], "password", params[1]);
-            try (var outputStream = http.getOutputStream()) {
-                var jsonBody = new Gson().toJson(body);
-                outputStream.write(jsonBody.getBytes());
-            }
-
-            http.connect();
-
-            try (InputStream responseBody = http.getInputStream()) {
-                InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-                var output = new Gson().fromJson(inputStreamReader, Map.class);
-                return output.toString();
-            }
-
-        } catch (Exception e) {
-            if (e.getClass() != IOException.class) {
-                return "bad URL";
-            } else {
-                return "Incorrect username or password. Please try again.";
-            }
-        }
-
     }
 }
