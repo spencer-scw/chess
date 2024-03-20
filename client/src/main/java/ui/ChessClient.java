@@ -1,10 +1,12 @@
 package ui;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import model.AuthData;
+import model.GameData;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 public class ChessClient {
     private final ServerFacade serverFacade;
@@ -102,12 +104,27 @@ public class ChessClient {
     }
 
     private String listGames() {
+        StringBuilder result = new StringBuilder();
+        result.append(String.format("gameID | gameName        | whitePlayer     | blackPlayer   %n"));
+        result.append(String.format("-------+-----------------+-----------------+---------------%n"));
+
         try {
-            Map result = serverFacade.listGames(authToken);
-            return result.toString();
+            ArrayList games = (ArrayList) serverFacade.listGames(authToken).get("games");
+            for (var game: games) {
+                var gameID = ((LinkedTreeMap<?, ?>) game).get("gameID");
+                var gameName = ((LinkedTreeMap<?, ?>) game).get("gameName");
+                result.append(String.format(
+                        " %-5d | %-15s | %-15s | %-15s %n",
+                        Math.round((Double) gameID),
+                        gameName,
+                        null,
+                        null
+                ));
+            }
         } catch (Exception e) {
             return e.getMessage();
         }
+        return result.toString();
     }
 
     private String joinGame(String[] params) {
