@@ -61,27 +61,35 @@ public class ServerFacade {
 
     }
 
-    public String observeGame(String[] params) {
-        return "";
+    public void logOut(String authToken) throws IOException, URISyntaxException {
+        this.handleHTTP(
+                "DELETE",
+                "session",
+                 authToken,
+                null
+        );
     }
 
-    public String joinGame(String[] params) {
-        return "";
+    public Map createGame(String[] params, String authToken) throws IOException, URISyntaxException {
+        return this.handleHTTP(
+                "POST",
+                "game",
+                 authToken,
+                 Map.of("gameName", params[0])
+        );
     }
 
-    public String listGames() {
-        return "";
+    public Map observeGame(String[] params) {
+        return null;
     }
 
-    public String createGame(String[] params) {
-        return "";
+    public Map joinGame(String[] params) {
+        return null;
     }
 
-    public String logOut(String[] params) {
-        return "";
+    public Map listGames() {
+        return null;
     }
-
-
 
 
 }

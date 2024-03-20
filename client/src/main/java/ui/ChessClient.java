@@ -32,11 +32,11 @@ public class ChessClient {
             } else {
                 return switch (cmd) {
 
-                    case "logout" -> serverFacade.logOut(params);
-                    case "create" -> serverFacade.createGame(params);
-                    case "list" -> serverFacade.listGames();
-                    case "join" -> serverFacade.joinGame(params);
-                    case "observe" -> serverFacade.observeGame(params);
+                    case "logout" -> logOut();
+                    case "create" -> createGame(params);
+                    case "list" -> listGames();
+                    case "join" -> joinGame(params);
+                    case "observe" -> observeGame(params);
 
                     case "quit" -> "quit";
                     default -> help();
@@ -80,6 +80,37 @@ public class ChessClient {
                 return e.getMessage();
             }
         }
+    }
+
+    private String logOut() {
+        try {
+            serverFacade.logOut(authToken);
+            clientState = State.SIGNEDOUT;
+            authToken = "";
+            return "Logout successful.";
+        } catch (Exception e) {
+            return "Logout failed.";
+        }
+    }
+
+    private String createGame(String[] params) {
+        try {
+            return String.format("Created game %s with id %d", params[0], Math.round((Double) serverFacade.createGame(params, authToken).get("gameID")));
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    private String listGames() {
+        return null;
+    }
+
+    private String joinGame(String[] params) {
+        return null;
+    }
+
+    private String observeGame(String[] params) {
+        return null;
     }
 
     private String help() {

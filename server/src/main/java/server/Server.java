@@ -73,4 +73,8 @@ public class Server {
         res.type("application/json");
         return "{}";
     }
+
+    public void clearTables() {
+        utilService.clear();
+    }
 }
