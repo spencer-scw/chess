@@ -13,8 +13,12 @@ public class ChessClient {
     private State clientState;
     private String authToken;
 
+    private ArrayList<Integer> lastListOrder;
+
     public ChessClient(String serverURL) {
         this.serverFacade = new ServerFacade(serverURL);
+
+        lastListOrder = new ArrayList<>();
 
         clientState = State.SIGNEDOUT;
     }
@@ -105,20 +109,31 @@ public class ChessClient {
 
     private String listGames() {
         StringBuilder result = new StringBuilder();
-        result.append(String.format("gameID | gameName        | whitePlayer     | blackPlayer   %n"));
-        result.append(String.format("-------+-----------------+-----------------+---------------%n"));
+        result.append(String.format("ID   | gameName        | whitePlayer     | blackPlayer   %n"));
+        result.append(String.format("-----+-----------------+-----------------+---------------%n"));
 
         try {
             ArrayList games = (ArrayList) serverFacade.listGames(authToken).get("games");
+            lastListOrder = new ArrayList<>();
             for (var game: games) {
                 var gameID = ((LinkedTreeMap<?, ?>) game).get("gameID");
+                lastListOrder.add((int) Math.round((Double) gameID));
+
                 var gameName = ((LinkedTreeMap<?, ?>) game).get("gameName");
+                var whiteUsername = ((LinkedTreeMap<?, ?>) game).get("whiteUsername");
+                if (whiteUsername == null) {
+                    whiteUsername = "-";
+                }
+                var blackUsername = ((LinkedTreeMap<?, ?>) game).get("blackUsername");
+                if (blackUsername == null) {
+                    blackUsername = "-";
+                }
                 result.append(String.format(
-                        " %-5d | %-15s | %-15s | %-15s %n",
-                        Math.round((Double) gameID),
+                        " %-3d | %-15s | %-15s | %-15s %n",
+                        lastListOrder.size() - 1,
                         gameName,
-                        null,
-                        null
+                        whiteUsername,
+                        blackUsername
                 ));
             }
         } catch (Exception e) {
@@ -128,7 +143,39 @@ public class ChessClient {
     }
 
     private String joinGame(String[] params) {
-        return null;
+        try {
+            if (params.length >= 2) {
+                serverFacade.joinGame(new String[]{params[1], lastListOrder.get(Integer.parseInt(params[0])).toString()}, authToken);
+            } else {
+                String assignedColor = "";
+                String gameID = "-1";
+                ArrayList games = (ArrayList) serverFacade.listGames(authToken).get("games");
+                for (var game: games) {
+                    gameID = (String) ((LinkedTreeMap<?, ?>) game).get("gameID");
+                    var whiteUsername = ((LinkedTreeMap<?, ?>) game).get("whiteUsername");
+                    var blackUsername = ((LinkedTreeMap<?, ?>) game).get("whiteUsername");
+                    if (Objects.equals(gameID, lastListOrder.get(Integer.parseInt(params[0])).toString())) {
+                        if (whiteUsername == null && blackUsername == null) {
+                            if (Math.random() > .5) {
+                                assignedColor = "WHITE";
+                            } else {
+                                assignedColor = "BLACK";
+                            }
+                        } else if (blackUsername == null) {
+                            assignedColor = "BLACK";
+                        } else if (whiteUsername == null) {
+                            assignedColor = "WHITE";
+                        } else {
+                            return "Desired game is full. Please observe this game or join another.";
+                        }
+                    }
+                    serverFacade.joinGame(new String[]{assignedColor, gameID}, authToken);
+                }
+            }
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+        return "[imagine a chessboard]";
     }
 
     private String observeGame(String[] params) {
@@ -151,7 +198,7 @@ public class ChessClient {
                     - %s logout %s - to log out
                     - %s list %s - to see available games
                     - %s create %s <game name> - to create a new game
-                    - %s join %s <game name> - to join a game
+                    - %s join %s <game name> [WHITE | BLACK | <empty> ] - to join a game. If no color is specified, will auto-assign.
                     - %s observe %s <game name> - to observe a game
                     """,EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
