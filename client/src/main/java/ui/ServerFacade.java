@@ -23,14 +23,17 @@ public class ServerFacade {
         URI uri = new URI(String.format("http://%s/%s", serverURL, endpoint));
         var http = (HttpURLConnection) uri.toURL().openConnection();
         http.setRequestMethod(method);
-        http.setDoOutput(true);
         http.addRequestProperty("Content-Type", "application/json");
         if (!authToken.isEmpty()) {
             http.addRequestProperty("authorization", authToken);
         }
-        try (var outputStream = http.getOutputStream()) {
-            var jsonBody = new Gson().toJson(body);
-            outputStream.write(jsonBody.getBytes());
+
+        if (body != null) {
+            http.setDoOutput(true);
+            try (var outputStream = http.getOutputStream()) {
+                var jsonBody = new Gson().toJson(body);
+                outputStream.write(jsonBody.getBytes());
+            }
         }
 
         http.connect();
