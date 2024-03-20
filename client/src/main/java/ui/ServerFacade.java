@@ -79,17 +79,21 @@ public class ServerFacade {
         );
     }
 
-    public Map observeGame(String[] params) {
-        return null;
+    public Map listGames(String authToken) throws IOException, URISyntaxException {
+        return this.handleHTTP(
+                "GET",
+                "game",
+                authToken,
+                null
+        );
     }
 
-    public Map joinGame(String[] params) {
-        return null;
+    public Map joinGame(String[] params, String authToken) throws IOException, URISyntaxException {
+        return this.handleHTTP(
+                "PUT",
+                "game",
+                authToken,
+                Map.of("playerColor", params[0], "gameID", params[1])
+        );
     }
-
-    public Map listGames() {
-        return null;
-    }
-
-
 }

@@ -102,7 +102,12 @@ public class ChessClient {
     }
 
     private String listGames() {
-        return null;
+        try {
+            Map result = serverFacade.listGames(authToken);
+            return result.toString();
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     private String joinGame(String[] params) {
