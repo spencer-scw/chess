@@ -96,7 +96,7 @@ public class ServerFacade {
                 "PUT",
                 "game",
                 authToken,
-                Map.of("playerColor", params[0], "gameID", params[1])
+                Map.of("playerColor", params[0].toUpperCase(), "gameID", Double.parseDouble(params[1]))
         );
     }
 }

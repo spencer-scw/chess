@@ -13,7 +13,7 @@ public class ChessClient {
     private State clientState;
     private String authToken;
 
-    private ArrayList<Integer> lastListOrder;
+    private ArrayList<Double> lastListOrder;
 
     public ChessClient(String serverURL) {
         this.serverFacade = new ServerFacade(serverURL);
@@ -117,7 +117,7 @@ public class ChessClient {
             lastListOrder = new ArrayList<>();
             for (var game: games) {
                 var gameID = ((LinkedTreeMap<?, ?>) game).get("gameID");
-                lastListOrder.add((int) Math.round((Double) gameID));
+                lastListOrder.add((Double) gameID);
 
                 var gameName = ((LinkedTreeMap<?, ?>) game).get("gameName");
                 var whiteUsername = ((LinkedTreeMap<?, ?>) game).get("whiteUsername");
@@ -148,12 +148,12 @@ public class ChessClient {
                 serverFacade.joinGame(new String[]{params[1], lastListOrder.get(Integer.parseInt(params[0])).toString()}, authToken);
             } else {
                 String assignedColor = "";
-                String gameID = "-1";
+                String gameID = "";
                 ArrayList games = (ArrayList) serverFacade.listGames(authToken).get("games");
                 for (var game: games) {
-                    gameID = (String) ((LinkedTreeMap<?, ?>) game).get("gameID");
+                    gameID = ((Double) ((LinkedTreeMap<?, ?>) game).get("gameID")).toString();
                     var whiteUsername = ((LinkedTreeMap<?, ?>) game).get("whiteUsername");
-                    var blackUsername = ((LinkedTreeMap<?, ?>) game).get("whiteUsername");
+                    var blackUsername = ((LinkedTreeMap<?, ?>) game).get("blackUsername");
                     if (Objects.equals(gameID, lastListOrder.get(Integer.parseInt(params[0])).toString())) {
                         if (whiteUsername == null && blackUsername == null) {
                             if (Math.random() > .5) {
@@ -168,8 +168,9 @@ public class ChessClient {
                         } else {
                             return "Desired game is full. Please observe this game or join another.";
                         }
+                        serverFacade.joinGame(new String[]{assignedColor, gameID}, authToken);
                     }
-                    serverFacade.joinGame(new String[]{assignedColor, gameID}, authToken);
+
                 }
             }
         } catch (Exception e) {
