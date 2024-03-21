@@ -1,5 +1,7 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import model.AuthData;
@@ -176,7 +178,8 @@ public class ChessClient {
         } catch (Exception e) {
             return e.getMessage();
         }
-        return "[imagine a chessboard]";
+        return BoardPrinter.printBoard(new ChessBoard(), ChessGame.TeamColor.WHITE) +
+                BoardPrinter.printBoard(new ChessBoard(), ChessGame.TeamColor.BLACK);
     }
 
     private String observeGame(String[] params) {
