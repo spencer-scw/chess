@@ -178,12 +178,24 @@ public class ChessClient {
         } catch (Exception e) {
             return e.getMessage();
         }
-        return BoardPrinter.printBoard(new ChessBoard(), ChessGame.TeamColor.WHITE) +
-                BoardPrinter.printBoard(new ChessBoard(), ChessGame.TeamColor.BLACK);
+        var blankGame = new ChessBoard();
+        blankGame.resetBoard();
+        return BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.WHITE) +
+                String.format("%n") +
+                BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.BLACK);
     }
 
     private String observeGame(String[] params) {
-        return null;
+        try {
+            serverFacade.joinGame(new String[]{null, lastListOrder.get(Integer.parseInt(params[0])).toString()}, authToken);
+            var blankGame = new ChessBoard();
+            blankGame.resetBoard();
+            return BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.WHITE) +
+                    String.format("%n") +
+                    BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.BLACK);
+        } catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     private String help() {

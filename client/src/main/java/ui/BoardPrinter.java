@@ -21,12 +21,23 @@ public class BoardPrinter {
 
         for (int i = loopStart; i != loopEnd; i += direction) {
             for (int j = loopStart; j != loopEnd; j += direction) {
-                ChessPiece currPiece = board.getPiece(new ChessPosition(1,1));
+                ChessPiece currPiece = board.getPiece(new ChessPosition(i, j));
                 String unicode = "";
+
+                // Checkerboard pattern
+                if ((i + j) % 2 == 0) {
+                    boardString.append(EscapeSequences.SET_BG_COLOR_DARK_GREY);
+                } else {
+                    boardString.append(EscapeSequences.SET_BG_COLOR_LIGHT_GREY);
+                }
+
+                // Blank square
                 if (currPiece == null) {
                     boardString.append(EscapeSequences.EMPTY);
                     continue;
                 }
+
+                // All other pieces
                 if (currPiece.getTeamColor() == ChessGame.TeamColor.WHITE) {
                     unicode = switch (currPiece.getPieceType()) {
                         case KING -> EscapeSequences.WHITE_KING;
@@ -48,7 +59,7 @@ public class BoardPrinter {
                 }
                 boardString.append(unicode);
             }
-            boardString.append(String.format("%n"));
+            boardString.append(String.format("%s%n", EscapeSequences.RESET_BG_COLOR));
         }
         return boardString.toString();
     }
