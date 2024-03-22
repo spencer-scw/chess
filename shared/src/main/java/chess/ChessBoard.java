@@ -108,8 +108,6 @@ public class ChessBoard {
                 boardSquares[i][j] = currPiece;
             }
         }
-        System.out.println(this);
-        System.out.println(boardSquares[0][0]);
     }
 
     public void copyBoard (ChessBoard board) {
