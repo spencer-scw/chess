@@ -187,7 +187,7 @@ public class ChessClient {
 
     private String observeGame(String[] params) {
         try {
-            serverFacade.joinGame(new String[]{null, lastListOrder.get(Integer.parseInt(params[0])).toString()}, authToken);
+            serverFacade.joinGame(new String[]{lastListOrder.get(Integer.parseInt(params[0])).toString()}, authToken);
             var blankGame = new ChessBoard();
             blankGame.resetBoard();
             return BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.WHITE) +

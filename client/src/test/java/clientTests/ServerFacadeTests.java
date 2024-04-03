@@ -8,6 +8,7 @@ import ui.ServerFacade;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -74,6 +75,44 @@ public class ServerFacadeTests {
     @Test
     void testInvalidCreateGame() {
         assertThrows(IOException.class, () -> serverFacade.createGame(new String[] {"newGame"}, "fake"));
+    }
+
+    @Test
+    void testListGames() throws IOException, URISyntaxException {
+        String auth = (String) serverFacade.register(new String[] {"lister", "gaming", "test@example.com"}).get("authToken");
+        serverFacade.createGame(new String[] {"listableGame"}, auth);
+        ArrayList gameList = (ArrayList) serverFacade.listGames(auth).get("games");
+        assertFalse(gameList.isEmpty());
+    }
+
+    @Test
+    void listNoGames() throws IOException, URISyntaxException {
+        server.clearTables();
+        String auth = (String) serverFacade.register(new String[] {"blank", "lister", "test@example.com"}).get("authToken");
+        ArrayList gameList = (ArrayList) serverFacade.listGames(auth).get("games");
+        assertTrue(gameList.isEmpty());
+    }
+
+    @Test
+    void testJoinGameBothColors() throws IOException, URISyntaxException {
+        String auth = (String) serverFacade.register(new String[] {"player", "gaming", "test@example.com"}).get("authToken");
+        String gameID = serverFacade.createGame(new String[] {"joinGame"}, auth).get("gameID").toString();
+        assertDoesNotThrow(() -> serverFacade.joinGame(new String[]{"white", gameID}, auth));
+        assertDoesNotThrow(() -> serverFacade.joinGame(new String[]{"black", gameID}, auth));
+    }
+
+    @Test
+    void testObserveGame() throws IOException, URISyntaxException {
+        String auth = (String) serverFacade.register(new String[] {"observer", "gaming", "test@example.com"}).get("authToken");
+        String gameID = serverFacade.createGame(new String[] {"joinGame"}, auth).get("gameID").toString();
+        assertDoesNotThrow(() -> serverFacade.joinGame(new String[]{gameID}, auth));
+    }
+
+    @Test
+    void testJoinInvalidGame() throws IOException, URISyntaxException {
+        String auth = (String) serverFacade.register(new String[] {"delusional", "gaming", "test@example.com"}).get("authToken");
+        String gameID = "0.0";
+        assertThrows(IOException.class, () -> serverFacade.joinGame(new String[]{gameID}, auth));
     }
 
 }
