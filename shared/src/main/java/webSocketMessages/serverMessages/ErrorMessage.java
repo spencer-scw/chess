@@ -1,7 +1,7 @@
 package webSocketMessages.serverMessages;
 
-public class Error extends ServerMessage{
-    public Error(String errorMessage) {
+public class ErrorMessage extends ServerMessage{
+    public ErrorMessage(String errorMessage) {
         super(ServerMessageType.ERROR, errorMessage);
     }
 }

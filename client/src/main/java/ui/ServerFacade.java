@@ -1,16 +1,23 @@
 package ui;
 
+import chess.ChessGame;
 import ui.http.HttpCommunicator;
+import ui.websocket.ServerMessageObserver;
+import ui.websocket.WebsocketCommunicator;
+import webSocketMessages.userCommands.JoinPlayer;
 
+import javax.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Map;
 
 public class ServerFacade {
     private final HttpCommunicator httpCommunicator;
+    private final WebsocketCommunicator websocketCommunicator;
 
-    public ServerFacade(String serverURL) {
+    public ServerFacade(String serverURL, ServerMessageObserver serverMessageObserver) throws DeploymentException, URISyntaxException, IOException {
         httpCommunicator = new HttpCommunicator(serverURL);
+        websocketCommunicator = new WebsocketCommunicator(serverURL, serverMessageObserver);
     }
 
     public Map logIn(String[] params) throws Exception {
@@ -76,6 +83,11 @@ public class ServerFacade {
                     Map.of("gameID", Double.parseDouble(params[0]))
             );
         }
+    }
+
+    public void joinPlayer(String authToken, Integer gameID, ChessGame.TeamColor playerColor) throws IOException {
+        JoinPlayer joinCommand = new JoinPlayer(authToken, gameID, playerColor);
+        websocketCommunicator.sendUserGameCommand(joinCommand);
     }
 
 

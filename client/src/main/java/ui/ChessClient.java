@@ -2,16 +2,15 @@ package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
-import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import model.AuthData;
-import model.GameData;
 import ui.websocket.ServerMessageObserver;
-import webSocketMessages.serverMessages.Error;
+import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 
+import javax.websocket.DeploymentException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 public class ChessClient implements ServerMessageObserver {
@@ -21,8 +20,8 @@ public class ChessClient implements ServerMessageObserver {
 
     private ArrayList<Double> lastListOrder;
 
-    public ChessClient(String serverURL) {
-        this.serverFacade = new ServerFacade(serverURL);
+    public ChessClient(String serverURL) throws DeploymentException, URISyntaxException, IOException {
+        this.serverFacade = new ServerFacade(serverURL, this);
 
         lastListOrder = new ArrayList<>();
 
@@ -234,7 +233,7 @@ public class ChessClient implements ServerMessageObserver {
     }
 
     @Override
-    public void handleError(Error error) {
+    public void handleError(ErrorMessage error) {
 
     }
 
