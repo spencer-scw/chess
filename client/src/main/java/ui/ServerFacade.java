@@ -1,59 +1,30 @@
 package ui;
 
-import com.google.gson.Gson;
+import ui.http.HttpCommunicator;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
 public class ServerFacade {
-    private final String serverURL;
+    private final HttpCommunicator httpCommunicator;
 
     public ServerFacade(String serverURL) {
-        this.serverURL = serverURL;
-    }
-
-    private Map handleHTTP(String method, String endpoint, String authToken, Map body) throws IOException, URISyntaxException {
-        URI uri = new URI(String.format("http://%s/%s", serverURL, endpoint));
-        var http = (HttpURLConnection) uri.toURL().openConnection();
-        http.setRequestMethod(method);
-        http.addRequestProperty("Content-Type", "application/json");
-        if (!authToken.isEmpty()) {
-            http.addRequestProperty("authorization", authToken);
-        }
-
-        if (body != null) {
-            http.setDoOutput(true);
-            try (var outputStream = http.getOutputStream()) {
-                var jsonBody = new Gson().toJson(body);
-                outputStream.write(jsonBody.getBytes());
-            }
-        }
-
-        http.connect();
-
-        try (InputStream responseBody = http.getInputStream()) {
-            InputStreamReader inputStreamReader = new InputStreamReader(responseBody);
-            return new Gson().fromJson(inputStreamReader, Map.class);
-        }
+        httpCommunicator = new HttpCommunicator(serverURL);
     }
 
     public Map logIn(String[] params) throws Exception {
-        return this.handleHTTP(
-               "POST",
-               "session",
-               "",
+        return httpCommunicator.handleHTTP(
+                "POST",
+                "session",
+                "",
                 Map.of("username", params[0], "password", params[1])
         );
 
     }
 
     public Map register(String[] params) throws IOException, URISyntaxException {
-        return this.handleHTTP(
+        return httpCommunicator.handleHTTP(
                 "POST",
                 "user",
                 "",
@@ -63,25 +34,25 @@ public class ServerFacade {
     }
 
     public void logOut(String authToken) throws IOException, URISyntaxException {
-        this.handleHTTP(
+        httpCommunicator.handleHTTP(
                 "DELETE",
                 "session",
-                 authToken,
+                authToken,
                 null
         );
     }
 
     public Map createGame(String[] params, String authToken) throws IOException, URISyntaxException {
-        return this.handleHTTP(
+        return httpCommunicator.handleHTTP(
                 "POST",
                 "game",
-                 authToken,
-                 Map.of("gameName", params[0])
+                authToken,
+                Map.of("gameName", params[0])
         );
     }
 
     public Map listGames(String authToken) throws IOException, URISyntaxException {
-        return this.handleHTTP(
+        return httpCommunicator.handleHTTP(
                 "GET",
                 "game",
                 authToken,
@@ -91,14 +62,14 @@ public class ServerFacade {
 
     public void joinGame(String[] params, String authToken) throws IOException, URISyntaxException {
         if (params.length >= 2) {
-            this.handleHTTP(
+            httpCommunicator.handleHTTP(
                     "PUT",
                     "game",
                     authToken,
                     Map.of("playerColor", params[0].toUpperCase(), "gameID", Double.parseDouble(params[1]))
             );
         } else {
-            this.handleHTTP(
+            httpCommunicator.handleHTTP(
                     "PUT",
                     "game",
                     authToken,
@@ -106,4 +77,6 @@ public class ServerFacade {
             );
         }
     }
+
+
 }

@@ -29,7 +29,7 @@ public class WebSocketHandler {
         switch (userGameCommand.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(authDAO.getAuth(userGameCommand.getAuthString()).username(), session);
             case JOIN_OBSERVER -> joinObserver();
-            case MAKE_MOVE -> makeMove();-
+            case MAKE_MOVE -> makeMove();
             case LEAVE -> leave();
             case RESIGN -> resign();
         }
@@ -52,6 +52,5 @@ public class WebSocketHandler {
     }
 
     private void resign() {
-    }
     }
 }

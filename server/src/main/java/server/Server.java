@@ -11,33 +11,30 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
+import server.websocket.WebSocketHandler;
+
 public class Server {
-    private AuthDAO authDAO;
-    private GameDAO gameDAO;
-    private UserDAO userDAO;
 
-    private GameService gameService;
-    private final UserService userService;
     private final UtilService utilService;
-
     private final GameHandler gameHandler;
-
     private final SessionHandler sessionHandler;
-
     private final UserHandler userHandler;
+    private final WebSocketHandler webSocketHandler;
 
     public Server() {
-        authDAO = new DatabaseAuthDAO();
-        gameDAO = new DatabaseGameDAO();
-        userDAO = new DatabaseUserDAO();
+        AuthDAO authDAO = new DatabaseAuthDAO();
+        GameDAO gameDAO = new DatabaseGameDAO();
+        UserDAO userDAO = new DatabaseUserDAO();
 
-        gameService = new GameService(authDAO, gameDAO);
-        userService = new UserService(authDAO, userDAO);
+        GameService gameService = new GameService(authDAO, gameDAO);
+        UserService userService = new UserService(authDAO, userDAO);
         utilService = new UtilService(authDAO, gameDAO, userDAO);
 
         gameHandler = new GameHandler(gameService);
         sessionHandler = new SessionHandler(userService);
         userHandler = new UserHandler(userService);
+
+        webSocketHandler = new WebSocketHandler(authDAO);
     }
 
     public int run(int desiredPort) {
@@ -54,6 +51,8 @@ public class Server {
         Spark.get("/game", gameHandler::list);
         Spark.post("/game", gameHandler::create);
         Spark.put("/game", gameHandler::join);
+
+        Spark.webSocket("/connect", webSocketHandler);
 
         Spark.exception(Exception.class, userHandler::errorHandler);
 

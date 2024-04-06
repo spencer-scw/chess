@@ -6,11 +6,15 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import model.AuthData;
 import model.GameData;
+import ui.websocket.ServerMessageObserver;
+import webSocketMessages.serverMessages.Error;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.Notification;
 
 import java.io.IOException;
 import java.util.*;
 
-public class ChessClient {
+public class ChessClient implements ServerMessageObserver {
     private final ServerFacade serverFacade;
     private State clientState;
     private String authToken;
@@ -222,5 +226,20 @@ public class ChessClient {
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT);
         }
+    }
+
+    @Override
+    public void handleLoadGame(LoadGame loadGame) {
+
+    }
+
+    @Override
+    public void handleError(Error error) {
+
+    }
+
+    @Override
+    public void handleNotification(Notification notification) {
+
     }
 }
