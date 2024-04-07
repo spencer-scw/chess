@@ -22,12 +22,15 @@ public class WebsocketCommunicator extends Endpoint {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         this.session = container.connectToServer(this, uri);
 
-        this.session.addMessageHandler((MessageHandler.Whole<String>) message -> {
-            ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
-            switch (serverMessage.getServerMessageType()) {
-                case LOAD_GAME -> serverMessageObserver.handleLoadGame((LoadGame) serverMessage);
-                case ERROR -> serverMessageObserver.handleError((ErrorMessage) serverMessage);
-                case NOTIFICATION -> serverMessageObserver.handleNotification((Notification) serverMessage);
+        this.session.addMessageHandler( new MessageHandler.Whole<String>() {
+            @Override
+            public void onMessage(String message) {
+                ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                switch (serverMessage.getServerMessageType()) {
+                    case LOAD_GAME -> serverMessageObserver.handleLoadGame((LoadGame) serverMessage);
+                    case ERROR -> serverMessageObserver.handleError((ErrorMessage) serverMessage);
+                    case NOTIFICATION -> serverMessageObserver.handleNotification((Notification) serverMessage);
+                }
             }
         });
 

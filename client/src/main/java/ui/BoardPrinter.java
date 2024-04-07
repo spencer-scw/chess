@@ -5,7 +5,6 @@ import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
 
-import javax.print.DocFlavor;
 import java.util.HashSet;
 
 public class BoardPrinter {

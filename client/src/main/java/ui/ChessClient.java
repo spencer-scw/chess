@@ -85,8 +85,8 @@ public class ChessClient implements ServerMessageObserver {
                     - %s logout %s - to log out.
                     - %s list %s - to see available games.
                     - %s create %s <game name> - to create a new game.
-                    - %s join %s <game name> [WHITE | BLACK | <empty> ] - to join a game. If no color is specified, will auto-assign.
-                    - %s observe %s <game name> - to observe a game.
+                    - %s join %s <game id> [WHITE | BLACK | <empty> ] - to join a game. If no color is specified, will auto-assign.
+                    - %s observe %s <game id> - to observe a game.
                     - %s help %s (or any invalid command) - to see this list.
                     """,EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
@@ -125,6 +125,6 @@ public class ChessClient implements ServerMessageObserver {
 
     @Override
     public void handleNotification(Notification notification) {
-
+        System.out.printf("%s%s%s%n", EscapeSequences.SET_TEXT_ITALIC, notification, EscapeSequences.RESET_TEXT_ITALIC);
     }
 }

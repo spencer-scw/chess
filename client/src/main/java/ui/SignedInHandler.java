@@ -81,6 +81,7 @@ public class SignedInHandler {
         try {
             if (params.length >= 2) {
                 serverFacade.joinGame(new String[]{params[1], lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
+                sessionInfo.setTeamColor(ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
             } else {
                 String assignedColor = "";
                 String gameID = "";
@@ -104,8 +105,8 @@ public class SignedInHandler {
                             return "Desired game is full. Please observe this game or join another.";
                         }
                         serverFacade.joinGame(new String[]{assignedColor, gameID}, sessionInfo.getAuthToken());
+                        sessionInfo.setTeamColor(ChessGame.TeamColor.valueOf(assignedColor));
                     }
-
                 }
             }
             sessionInfo.setClientState(State.INGAME);
@@ -121,6 +122,7 @@ public class SignedInHandler {
     protected String observeGame(String[] params) {
         try {
             serverFacade.joinGame(new String[]{lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
+            sessionInfo.setClientState(State.INGAME);
             return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE, null) +
                     String.format("%n") +
                     BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK, null);
