@@ -111,21 +111,18 @@ public class SignedInHandler {
         } catch (Exception e) {
             return e.getMessage();
         }
-        var blankGame = new ChessBoard();
-        blankGame.resetBoard();
-        return BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.WHITE) +
+
+        return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE) +
                 String.format("%n") +
-                BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.BLACK);
+                BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK);
     }
 
     protected String observeGame(String[] params) {
         try {
             serverFacade.joinGame(new String[]{lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
-            var blankGame = new ChessBoard();
-            blankGame.resetBoard();
-            return BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.WHITE) +
+            return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE) +
                     String.format("%n") +
-                    BoardPrinter.printBoard(blankGame, ChessGame.TeamColor.BLACK);
+                    BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK);
         } catch (Exception e) {
             return e.getMessage();
         }

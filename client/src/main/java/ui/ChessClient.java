@@ -15,15 +15,13 @@ import java.net.URISyntaxException;
 import java.util.*;
 
 public class ChessClient implements ServerMessageObserver {
-    private final ServerFacade serverFacade;
     private final SignedOutHandler signedOutHandler;
     private final SignedInHandler signedInHandler;
     private final SessionInfo sessionInfo;
-
-
     public ChessClient(String serverURL) throws DeploymentException, URISyntaxException, IOException {
-        this.serverFacade = new ServerFacade(serverURL, this);
-        sessionInfo = new SessionInfo("", State.SIGNEDOUT);
+        ServerFacade serverFacade = new ServerFacade(serverURL, this);
+        sessionInfo = new SessionInfo("", State.SIGNEDOUT, new ChessBoard(), ChessGame.TeamColor.WHITE);
+        sessionInfo.getBoard().resetBoard();
         signedOutHandler = new SignedOutHandler(serverFacade, sessionInfo);
         signedInHandler = new SignedInHandler(serverFacade, sessionInfo);
     }
@@ -40,7 +38,7 @@ public class ChessClient implements ServerMessageObserver {
                     case "quit" -> "quit";
                     default -> help();
                 };
-            } else {
+            } else if (sessionInfo.getClientState() == State.SIGNEDIN){
                 return switch (cmd) {
 
                     case "logout" -> signedInHandler.logOut();
@@ -52,6 +50,16 @@ public class ChessClient implements ServerMessageObserver {
                     case "quit" -> "quit";
                     default -> help();
                 };
+            } else {
+                return switch (cmd) {
+                    case "redraw" -> null;
+                    case "move" -> null;
+                    case "leave" -> null;
+                    case "resign" -> null;
+                    case "highlight" -> null;
+
+                    default -> help();
+                };
             }
         } catch (Exception ex) {
             return ex.getMessage();
@@ -59,30 +67,48 @@ public class ChessClient implements ServerMessageObserver {
     }
 
     private String help() {
-        if (clientState == State.SIGNEDOUT) {
+        if (sessionInfo.getClientState() == State.SIGNEDOUT) {
             return String.format("""
-                   - %s login %s <username> <password> - to log in
-                   - %s register %s <username> <password> <email> - to create an account
-                   - %s help %s (or any invalid command) - to see this list
+                   - %s login %s <username> <password> - to log in.
+                   - %s register %s <username> <password> <email> - to create an account.
+                   - %s help %s (or any invalid command) - to see this list.
                    - %s quit %s
                     """,EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT);
+        } else if (sessionInfo.getClientState() == State.SIGNEDIN) {
+            return String.format("""
+                    - %s logout %s - to log out.
+                    - %s list %s - to see available games.
+                    - %s create %s <game name> - to create a new game.
+                    - %s join %s <game name> [WHITE | BLACK | <empty> ] - to join a game. If no color is specified, will auto-assign.
+                    - %s observe %s <game name> - to observe a game.
+                    - %s help %s (or any invalid command) - to see this list.
+                    """,EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
+                        EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
+                        EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
+                        EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
+                        EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
+                        EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT);
         } else {
             return String.format("""
-                    - %s logout %s - to log out
-                    - %s list %s - to see available games
-                    - %s create %s <game name> - to create a new game
-                    - %s join %s <game name> [WHITE | BLACK | <empty> ] - to join a game. If no color is specified, will auto-assign.
-                    - %s observe %s <game name> - to observe a game
+                    - %s move <origin> <destination> %s - moves piece from <origin> to <destination> if it is your turn and the move is valid.
+                    - %s redraw %s - redraws the board.
+                    - %s leave %s  - to leave the game. This does not resign the game.
+                    - %s resign %s - to resign the game. This does not leave the game session.
+                    - %s highlight <position> %s - shows all possible moves for a piece at <position>.
+                    - %s help %s (or any invalid command) - to see this list.
                     """,EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
+                        EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT,
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT);
         }
     }
+
+    // Incoming websocket messages handled below
 
     @Override
     public void handleLoadGame(LoadGame loadGame) {
