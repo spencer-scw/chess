@@ -1,10 +1,11 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import ui.http.HttpCommunicator;
 import ui.websocket.ServerMessageObserver;
 import ui.websocket.WebsocketCommunicator;
-import webSocketMessages.userCommands.JoinPlayer;
+import webSocketMessages.userCommands.*;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
@@ -19,6 +20,8 @@ public class ServerFacade {
         httpCommunicator = new HttpCommunicator(serverURL);
         websocketCommunicator = new WebsocketCommunicator(serverURL, serverMessageObserver);
     }
+
+    //HTTP METHODS
 
     public Map logIn(String[] params) throws Exception {
         return httpCommunicator.handleHTTP(
@@ -85,10 +88,31 @@ public class ServerFacade {
         }
     }
 
+    // WEBSOCKET METHODS
+
     public void joinPlayer(String authToken, Integer gameID, ChessGame.TeamColor playerColor) throws IOException {
         JoinPlayer joinCommand = new JoinPlayer(authToken, gameID, playerColor);
         websocketCommunicator.sendUserGameCommand(joinCommand);
     }
 
+    public void joinObserver(String authToken, Integer gameID) throws IOException {
+        JoinObserver joinCommand = new JoinObserver(authToken, gameID);
+        websocketCommunicator.sendUserGameCommand(joinCommand);
+    }
+
+    public void makeMove(String authToken, Integer gameID, ChessMove move) throws IOException {
+        MakeMove moveCommand = new MakeMove(authToken, gameID, move);
+        websocketCommunicator.sendUserGameCommand(moveCommand);
+    }
+
+    public void leave(String authToken, Integer gameID) throws IOException {
+        Leave leaveCommand = new Leave(authToken, gameID);
+        websocketCommunicator.sendUserGameCommand(leaveCommand);
+    }
+
+    public void resign(String authToken, Integer gameID) throws IOException {
+        Resign resignCommand = new Resign(authToken, gameID);
+        websocketCommunicator.sendUserGameCommand(resignCommand);
+    }
 
 }
