@@ -78,6 +78,7 @@ public class ServerFacade {
                     authToken,
                     Map.of("playerColor", params[0].toUpperCase(), "gameID", Double.parseDouble(params[1]))
             );
+            joinPlayer(authToken, Integer.parseInt(params[1].split("\\.")[0]), ChessGame.TeamColor.valueOf(params[0].toUpperCase()));
         } else {
             httpCommunicator.handleHTTP(
                     "PUT",
@@ -85,6 +86,7 @@ public class ServerFacade {
                     authToken,
                     Map.of("gameID", Double.parseDouble(params[0]))
             );
+            joinObserver(authToken, Integer.parseInt(params[0].split("\\.")[0]));
         }
     }
 

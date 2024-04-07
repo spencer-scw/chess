@@ -108,21 +108,22 @@ public class SignedInHandler {
 
                 }
             }
+            sessionInfo.setClientState(State.INGAME);
         } catch (Exception e) {
             return e.getMessage();
         }
 
-        return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE) +
+        return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE, null) +
                 String.format("%n") +
-                BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK);
+                BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK, null);
     }
 
     protected String observeGame(String[] params) {
         try {
             serverFacade.joinGame(new String[]{lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
-            return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE) +
+            return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE, null) +
                     String.format("%n") +
-                    BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK);
+                    BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK, null);
         } catch (Exception e) {
             return e.getMessage();
         }

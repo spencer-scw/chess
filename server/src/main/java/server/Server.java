@@ -44,6 +44,8 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
 
+        Spark.webSocket("/connect", webSocketHandler);
+
         Spark.delete("/db", this::clear);
         Spark.post("/user", userHandler::register);
         Spark.post("/session", sessionHandler::login);
@@ -51,8 +53,6 @@ public class Server {
         Spark.get("/game", gameHandler::list);
         Spark.post("/game", gameHandler::create);
         Spark.put("/game", gameHandler::join);
-
-        Spark.webSocket("/connect", webSocketHandler);
 
         Spark.exception(Exception.class, userHandler::errorHandler);
 

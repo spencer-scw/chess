@@ -17,13 +17,16 @@ import java.util.*;
 public class ChessClient implements ServerMessageObserver {
     private final SignedOutHandler signedOutHandler;
     private final SignedInHandler signedInHandler;
+    private final InGameHandler inGameHandler;
     private final SessionInfo sessionInfo;
+
     public ChessClient(String serverURL) throws DeploymentException, URISyntaxException, IOException {
         ServerFacade serverFacade = new ServerFacade(serverURL, this);
         sessionInfo = new SessionInfo("", State.SIGNEDOUT, new ChessBoard(), ChessGame.TeamColor.WHITE);
         sessionInfo.getBoard().resetBoard();
         signedOutHandler = new SignedOutHandler(serverFacade, sessionInfo);
         signedInHandler = new SignedInHandler(serverFacade, sessionInfo);
+        inGameHandler = new InGameHandler(serverFacade, sessionInfo);
     }
 
     public String eval(String input) {
@@ -52,11 +55,11 @@ public class ChessClient implements ServerMessageObserver {
                 };
             } else {
                 return switch (cmd) {
-                    case "redraw" -> null;
+                    case "redraw" -> inGameHandler.redraw();
                     case "move" -> null;
                     case "leave" -> null;
                     case "resign" -> null;
-                    case "highlight" -> null;
+                    case "highlight" -> inGameHandler.highlight(params);
 
                     default -> help();
                 };
