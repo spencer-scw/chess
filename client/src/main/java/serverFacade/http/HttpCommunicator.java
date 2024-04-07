@@ -1,4 +1,4 @@
-package ui.http;
+package serverFacade.http;
 
 import com.google.gson.Gson;
 

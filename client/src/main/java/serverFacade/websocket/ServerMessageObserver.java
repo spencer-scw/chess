@@ -1,4 +1,4 @@
-package ui.websocket;
+package serverFacade.websocket;
 
 
 import webSocketMessages.serverMessages.ErrorMessage;

@@ -1,10 +1,10 @@
-package ui;
+package serverFacade;
 
 import chess.ChessGame;
 import chess.ChessMove;
-import ui.http.HttpCommunicator;
-import ui.websocket.ServerMessageObserver;
-import ui.websocket.WebsocketCommunicator;
+import serverFacade.http.HttpCommunicator;
+import serverFacade.websocket.ServerMessageObserver;
+import serverFacade.websocket.WebsocketCommunicator;
 import webSocketMessages.userCommands.*;
 
 import javax.websocket.DeploymentException;

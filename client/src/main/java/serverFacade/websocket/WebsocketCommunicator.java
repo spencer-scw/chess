@@ -1,7 +1,6 @@
-package ui.websocket;
+package serverFacade.websocket;
 
 import com.google.gson.Gson;
-import model.GameData;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
