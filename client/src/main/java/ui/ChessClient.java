@@ -8,6 +8,7 @@ import serverFacade.websocket.ServerMessageObserver;
 import webSocketMessages.serverMessages.ErrorMessage;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
@@ -114,17 +115,18 @@ public class ChessClient implements ServerMessageObserver {
     // Incoming websocket messages handled below
 
     @Override
-    public void handleLoadGame(LoadGame loadGame) {
+    public void handleLoadGame(ServerMessage loadGame) {
 
     }
 
     @Override
-    public void handleError(ErrorMessage error) {
+    public void handleError(ServerMessage error) {
 
     }
 
     @Override
-    public void handleNotification(Notification notification) {
-        System.out.printf("%s%s%s%n", EscapeSequences.SET_TEXT_ITALIC, notification, EscapeSequences.RESET_TEXT_ITALIC);
+    public void handleNotification(ServerMessage notification) {
+        System.out.printf("%s%s%s%n", EscapeSequences.SET_TEXT_ITALIC, notification.getMessage(), EscapeSequences.RESET_TEXT_ITALIC);
+        System.out.print("> ");
     }
 }

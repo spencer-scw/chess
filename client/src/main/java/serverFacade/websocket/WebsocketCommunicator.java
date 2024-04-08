@@ -27,9 +27,9 @@ public class WebsocketCommunicator extends Endpoint {
             public void onMessage(String message) {
                 ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
                 switch (serverMessage.getServerMessageType()) {
-                    case LOAD_GAME -> serverMessageObserver.handleLoadGame((LoadGame) serverMessage);
-                    case ERROR -> serverMessageObserver.handleError((ErrorMessage) serverMessage);
-                    case NOTIFICATION -> serverMessageObserver.handleNotification((Notification) serverMessage);
+                    case LOAD_GAME -> serverMessageObserver.handleLoadGame(serverMessage);
+                    case ERROR -> serverMessageObserver.handleError(serverMessage);
+                    case NOTIFICATION -> serverMessageObserver.handleNotification(serverMessage);
                 }
             }
         });
