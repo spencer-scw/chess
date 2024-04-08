@@ -115,17 +115,17 @@ public class ChessClient implements ServerMessageObserver {
     // Incoming websocket messages handled below
 
     @Override
-    public void handleLoadGame(ServerMessage loadGame) {
+    public void handleLoadGame(LoadGame loadGame) {
 
     }
 
     @Override
-    public void handleError(ServerMessage error) {
+    public void handleError(ErrorMessage error) {
 
     }
 
     @Override
-    public void handleNotification(ServerMessage notification) {
+    public void handleNotification(Notification notification) {
         System.out.printf("%s%s%s%n", EscapeSequences.SET_TEXT_ITALIC, notification.getMessage(), EscapeSequences.RESET_TEXT_ITALIC);
         System.out.print("> ");
     }

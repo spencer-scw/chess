@@ -7,7 +7,7 @@ import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 
 public interface ServerMessageObserver {
-    void handleLoadGame(ServerMessage loadGame);
-    void handleError(ServerMessage error);
-    void handleNotification(ServerMessage notification);
+    void handleLoadGame(LoadGame loadGame);
+    void handleError(ErrorMessage error);
+    void handleNotification(Notification notification);
 }

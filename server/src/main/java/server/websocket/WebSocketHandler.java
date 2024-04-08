@@ -6,6 +6,7 @@ import dataAccess.interfaces.AuthDAO;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -38,7 +39,7 @@ public class WebSocketHandler {
     private void joinPlayer(String username, Session session) throws IOException {
         connections.add(username, session);
         var message = String.format("%s joined the game.", username);
-        var notification = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION, message);
+        var notification = new Notification(message);
         connections.broadcast(username, notification);
     }
 
