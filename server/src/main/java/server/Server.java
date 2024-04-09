@@ -34,7 +34,7 @@ public class Server {
         sessionHandler = new SessionHandler(userService);
         userHandler = new UserHandler(userService);
 
-        webSocketHandler = new WebSocketHandler(authDAO);
+        webSocketHandler = new WebSocketHandler(authDAO, gameDAO, userDAO);
     }
 
     public int run(int desiredPort) {

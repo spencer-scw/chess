@@ -113,19 +113,14 @@ public class SignedInHandler {
         } catch (Exception e) {
             return e.getMessage();
         }
-
-        return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE, null) +
-                String.format("%n") +
-                BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK, null);
+        return null;
     }
 
     protected String observeGame(String[] params) {
         try {
             serverFacade.joinGame(new String[]{lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
             sessionInfo.setClientState(State.INGAME);
-            return BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.WHITE, null) +
-                    String.format("%n") +
-                    BoardPrinter.printBoard(sessionInfo.getBoard(), ChessGame.TeamColor.BLACK, null);
+            return null;
         } catch (Exception e) {
             return e.getMessage();
         }

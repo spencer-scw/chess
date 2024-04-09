@@ -36,4 +36,8 @@ public class ConnectionManager {
             connections.remove(c.username);
         }
     }
+
+    public void send(String username, ServerMessage serverMessage) throws IOException {
+        connections.get(username).send(serverMessage.toString());
+    }
 }
