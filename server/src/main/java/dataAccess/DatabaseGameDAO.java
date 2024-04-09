@@ -31,7 +31,7 @@ public class DatabaseGameDAO implements GameDAO {
             preparedStatement.setString(1, game.whiteUsername());
             preparedStatement.setString(2, game.blackUsername());
             preparedStatement.setString(3, game.gameName());
-            preparedStatement.setString(4, new Gson().toJson(game));
+            preparedStatement.setString(4, new Gson().toJson(game.game()));
             preparedStatement.executeUpdate();
 
             var resultSet = preparedStatement.getGeneratedKeys();

@@ -113,14 +113,14 @@ public class SignedInHandler {
         } catch (Exception e) {
             return e.getMessage();
         }
-        return null;
+        return String.format("Joined successfully as %s.", sessionInfo.getTeamColor().toString().toLowerCase()) ;
     }
 
     protected String observeGame(String[] params) {
         try {
             serverFacade.joinGame(new String[]{lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
             sessionInfo.setClientState(State.INGAME);
-            return null;
+            return "Joined successfully as an observer.";
         } catch (Exception e) {
             return e.getMessage();
         }

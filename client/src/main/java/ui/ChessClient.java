@@ -116,7 +116,8 @@ public class ChessClient implements ServerMessageObserver {
 
     @Override
     public void handleLoadGame(LoadGame loadGame) {
-        BoardPrinter.printBoard(loadGame.getGame().game().getBoard(), sessionInfo.getTeamColor(), null);
+        System.out.println();
+        System.out.print(BoardPrinter.printBoard(loadGame.getGame().game().getBoard(), sessionInfo.getTeamColor(), null));
         System.out.print("> ");
     }
 

@@ -1,5 +1,6 @@
 package service;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import dataAccess.interfaces.AuthDAO;
 import dataAccess.DataAccessException;
@@ -41,7 +42,11 @@ public class GameService {
         } catch (DataAccessException e) {
             return null;
         }
-        GameData gameData = new GameData(nextGameID, null, null, gameName, new ChessGame());
+        ChessGame newGame = new ChessGame();
+        ChessBoard startingBoard = new ChessBoard();
+        startingBoard.resetBoard();
+        newGame.setBoard(startingBoard);
+        GameData gameData = new GameData(nextGameID, null, null, gameName, newGame);
         nextGameID++;
         try {
             var dbID = gameDAO.createGame(gameData);
