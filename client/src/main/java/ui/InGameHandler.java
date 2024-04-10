@@ -49,6 +49,7 @@ public class InGameHandler {
     protected String leave() throws IOException {
         serverFacade.leave(sessionInfo.getAuthToken(), sessionInfo.getGameID());
         sessionInfo.setClientState(State.SIGNEDIN);
+
         return "";
     }
 
