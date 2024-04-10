@@ -46,6 +46,17 @@ public class InGameHandler {
         return "";
     }
 
+    protected String leave() throws IOException {
+        serverFacade.leave(sessionInfo.getAuthToken(), sessionInfo.getGameID());
+        sessionInfo.setClientState(State.SIGNEDIN);
+        return "";
+    }
+
+    protected String resign() throws IOException {
+        serverFacade.resign(sessionInfo.getAuthToken(), sessionInfo.getGameID());
+        return "";
+    }
+
     private ChessPosition gridIndex(String index) {
         int col = Character.getNumericValue(index.toUpperCase().charAt(0)) - 9;
         int row = Integer.parseInt(index.substring(1));

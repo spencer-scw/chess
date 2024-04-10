@@ -58,8 +58,8 @@ public class ChessClient implements ServerMessageObserver {
                 return switch (cmd) {
                     case "redraw" -> inGameHandler.redraw();
                     case "move" -> inGameHandler.makeMove(params);
-                    case "leave" -> null;
-                    case "resign" -> null;
+                    case "leave" -> inGameHandler.leave();
+                    case "resign" -> inGameHandler.resign();
                     case "highlight" -> inGameHandler.highlight(params);
 
                     default -> help();
@@ -123,7 +123,9 @@ public class ChessClient implements ServerMessageObserver {
 
     @Override
     public void handleError(ErrorMessage error) {
+        System.out.print(EscapeSequences.SET_BG_COLOR_RED);
         System.out.println(error.getMessage());
+        System.out.print(EscapeSequences.RESET_BG_COLOR);
         System.out.print("> ");
     }
 
