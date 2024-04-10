@@ -4,6 +4,10 @@ import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
 import server.Server;
 import serverFacade.ServerFacade;
+import serverFacade.websocket.ServerMessageObserver;
+import webSocketMessages.serverMessages.ErrorMessage;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.Notification;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -22,7 +26,26 @@ public class ServerFacadeTests {
         server.clearTables();
         var port = server.run(8081);
         System.out.println("Started test HTTP server on " + port);
-        serverFacade = new ServerFacade("localhost:8081");
+        try {
+            serverFacade = new ServerFacade("localhost:8081", new ServerMessageObserver() {
+                @Override
+                public void handleLoadGame(LoadGame loadGame) {
+
+                }
+
+                @Override
+                public void handleError(ErrorMessage error) {
+
+                }
+
+                @Override
+                public void handleNotification(Notification notification) {
+
+                }
+            });
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @AfterAll
