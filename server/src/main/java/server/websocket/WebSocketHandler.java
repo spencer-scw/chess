@@ -112,7 +112,7 @@ public class WebSocketHandler {
         GameData game = gameDAO.getGame(gameID);
 
         if ((Objects.equals(username, game.blackUsername()) && game.game().getTeamTurn() == ChessGame.TeamColor.WHITE)
-            || Objects.equals(username, game.whiteUsername()) && game.game().getTeamTurn() == ChessGame.TeamColor.BLACK) {
+            || (Objects.equals(username, game.whiteUsername()) && game.game().getTeamTurn() == ChessGame.TeamColor.BLACK)) {
             connections.send(authString, new ErrorMessage("It is not your turn!"));
         } else {
             try {
