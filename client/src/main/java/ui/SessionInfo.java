@@ -9,11 +9,16 @@ public class SessionInfo {
     private ChessBoard board;
     private ChessGame.TeamColor teamColor;
 
+    private Integer gameID;
+
+
+
     public SessionInfo(String authToken, State clientState, ChessBoard board, ChessGame.TeamColor teamColor) {
         this.authToken = authToken;
         this.clientState = clientState;
         this.board = board;
         this.teamColor = teamColor;
+        this.gameID = 0;
     }
 
     public String getAuthToken() {
@@ -46,5 +51,13 @@ public class SessionInfo {
 
     public void setTeamColor(ChessGame.TeamColor teamColor) {
         this.teamColor = teamColor;
+    }
+
+    public void setGameID(Integer gameID) {
+        this.gameID = gameID;
+    }
+
+    public Integer getGameID() {
+        return gameID;
     }
 }

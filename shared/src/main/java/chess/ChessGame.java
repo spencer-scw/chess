@@ -83,6 +83,9 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (board.getPiece(move.getStartPosition()) == null){
+            throw new InvalidMoveException("No piece at <origin>");
+        }
         if (validMoves(move.getStartPosition()).contains(move)) {
             if (turnColor == board.getPiece(move.getStartPosition()).getTeamColor()) {
                 board.movePiece(move);
@@ -91,10 +94,10 @@ public class ChessGame {
                     case WHITE -> TeamColor.BLACK;
                 };
             } else {
-                throw new InvalidMoveException();
+                throw new InvalidMoveException("Selected piece belongs to an opponent");
             }
         } else {
-            throw new InvalidMoveException();
+            throw new InvalidMoveException("Illegal / invalid move");
         }
     }
 

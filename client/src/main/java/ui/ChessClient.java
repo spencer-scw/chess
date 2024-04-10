@@ -57,7 +57,7 @@ public class ChessClient implements ServerMessageObserver {
             } else {
                 return switch (cmd) {
                     case "redraw" -> inGameHandler.redraw();
-                    case "move" -> null;
+                    case "move" -> inGameHandler.makeMove(params);
                     case "leave" -> null;
                     case "resign" -> null;
                     case "highlight" -> inGameHandler.highlight(params);
@@ -97,7 +97,7 @@ public class ChessClient implements ServerMessageObserver {
                         EscapeSequences.SET_TEXT_BOLD, EscapeSequences.RESET_TEXT_BOLD_FAINT);
         } else {
             return String.format("""
-                    - %s move <origin> <destination> %s - moves piece from <origin> to <destination> if it is your turn and the move is valid.
+                    - %s move <origin> <destination> [promotion_piece]%s - moves piece from <origin> to <destination> (with the option to specify [promotion_piece] if necessary) if it is your turn and the move is valid.
                     - %s redraw %s - redraws the board.
                     - %s leave %s  - to leave the game. This does not resign the game.
                     - %s resign %s - to resign the game. This does not leave the game session.
@@ -123,7 +123,8 @@ public class ChessClient implements ServerMessageObserver {
 
     @Override
     public void handleError(ErrorMessage error) {
-
+        System.out.println(error.getMessage());
+        System.out.print("> ");
     }
 
     @Override

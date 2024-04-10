@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataSource name="@localhost [2]">
   <database-model serializer="dbm" dbms="MYSQL" family-id="MYSQL" format-version="4.51">
-    <root id="1"/>
+    <root id="1">
+      <DefaultCasing>exact</DefaultCasing>
+      <DefaultEngine>InnoDB</DefaultEngine>
+      <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
+      <Grants>chess|schema||chess|localhost|ALTER|G
+chess|schema||chess|localhost|ALTER ROUTINE|G
+chess|schema||chess|localhost|CREATE|G
+chess|schema||chess|localhost|CREATE ROUTINE|G
+chess|schema||chess|localhost|CREATE TEMPORARY TABLES|G
+chess|schema||chess|localhost|CREATE VIEW|G
+chess|schema||chess|localhost|DELETE|G
+chess|schema||chess|localhost|DROP|G
+chess|schema||chess|localhost|EVENT|G
+chess|schema||chess|localhost|EXECUTE|G
+chess|schema||chess|localhost|INDEX|G
+chess|schema||chess|localhost|INSERT|G
+chess|schema||chess|localhost|LOCK TABLES|G
+chess|schema||chess|localhost|REFERENCES|G
+chess|schema||chess|localhost|SELECT|G
+chess|schema||chess|localhost|SHOW VIEW|G
+chess|schema||chess|localhost|TRIGGER|G
+chess|schema||chess|localhost|UPDATE|G</Grants>
+      <ServerVersion>8.0.36</ServerVersion>
+    </root>
     <collation id="2" parent="1" name="armscii8_general_ci">
       <Charset>armscii8</Charset>
       <DefaultForCharset>1</DefaultForCharset>

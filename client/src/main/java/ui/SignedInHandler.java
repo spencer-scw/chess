@@ -80,6 +80,8 @@ public class SignedInHandler {
     protected String joinGame(String[] params) {
         try {
             if (params.length >= 2) {
+                var gameID = lastListOrder.get(Integer.parseInt(params[0]));
+                sessionInfo.setGameID((int) Math.round(gameID));
                 serverFacade.joinGame(new String[]{params[1], lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
                 sessionInfo.setTeamColor(ChessGame.TeamColor.valueOf(params[1].toUpperCase()));
             } else {
@@ -105,6 +107,7 @@ public class SignedInHandler {
                             return "Desired game is full. Please observe this game or join another.";
                         }
                         serverFacade.joinGame(new String[]{assignedColor, gameID}, sessionInfo.getAuthToken());
+                        sessionInfo.setGameID((int) Math.round(Double.parseDouble(gameID)));
                         sessionInfo.setTeamColor(ChessGame.TeamColor.valueOf(assignedColor));
                     }
                 }
@@ -119,6 +122,7 @@ public class SignedInHandler {
     protected String observeGame(String[] params) {
         try {
             serverFacade.joinGame(new String[]{lastListOrder.get(Integer.parseInt(params[0])).toString()}, sessionInfo.getAuthToken());
+            sessionInfo.setGameID((int) Math.round(lastListOrder.get(Integer.parseInt(params[0]))));
             sessionInfo.setClientState(State.INGAME);
             return "Joined successfully as an observer.";
         } catch (Exception e) {
