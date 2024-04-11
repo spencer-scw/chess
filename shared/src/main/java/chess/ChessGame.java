@@ -14,8 +14,11 @@ public class ChessGame {
     private ChessBoard board = new ChessBoard();
     private TeamColor turnColor;
 
+    private Boolean gameOver;
+
     public ChessGame() {
         turnColor = TeamColor.WHITE;
+        gameOver = false;
     }
 
     /**
@@ -32,6 +35,14 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         turnColor = team;
+    }
+
+    public Boolean getGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver() {
+        this.gameOver = true;
     }
 
     /**

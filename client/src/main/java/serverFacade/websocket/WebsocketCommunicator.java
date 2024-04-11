@@ -40,12 +40,7 @@ public class WebsocketCommunicator extends Endpoint {
         this.session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
-    public void endSession() throws IOException {
-        this.session.close();
-    }
-
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-
     }
 }
